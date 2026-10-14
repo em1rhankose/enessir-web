@@ -1,67 +1,93 @@
-# Payload Blank Template
+# Psikolog Enes Sir — Web Sitesi
 
-This template comes configured with the bare minimum to get started on anything you need.
+Bir psikolog için geliştirilmiş, içeriği tamamen yönetim panelinden düzenlenebilen kurumsal web sitesi.
 
-## Quick start
+**Teknolojiler:** Next.js 16 (App Router) · React 19 · TypeScript · Payload CMS 3 · Tailwind CSS 4 · Motion · SQLite (geliştirme) / PostgreSQL (canlı) · Vitest · Playwright
 
-This template can be deployed directly from our Cloud hosting and it will setup MongoDB and cloud S3 object storage for media.
+## Özellikler
 
-## Quick Start - local setup
+**Ziyaretçi tarafı**
 
-To spin up this template locally, follow these steps:
+- Ana sayfada ilk açılışta şeffaf, kaydırınca dolan başlık çubuğu
+- Ana sayfada menü sırasıyla akan bölümler: Karşılama → Danışma Merkezimiz → Ben Kimim → Son 3 makale → İletişim
+- Kaydırdıkça beliren animasyonlar (işletim sisteminde "hareketi azalt" açıksa kapanır)
+- Makale listesi (sayfalamalı) ve her makale için ayrı sayfa; okuma süresi, ilgili makaleler
+- İletişim sayfasında solda form, sağda Google Haritalar
+- Sitenin her yerinde (makale sayfaları hariç) sabit WhatsApp butonu
+- KVKK onaylı iletişim formu; sunucu tarafı doğrulama, honeypot ve hız sınırı ile spam koruması
+- SEO: sayfa bazlı başlık ve açıklamalar, Open Graph, `sitemap.xml`, `robots.txt`
+- Mobil uyumlu, erişilebilir (anlamlı HTML, klavye ile gezinme, "içeriğe geç" bağlantısı)
 
-### Clone
+**Yönetim paneli (`/admin`)**
 
-After you click the `Deploy` button above, you'll want to have standalone copy of this repo on your machine. If you've already cloned this repo, skip to [Development](#development).
+- Türkçe arayüz, aydınlık tema
+- Makaleler: taslak/yayın akışı, başlıktan otomatik Türkçe uyumlu URL, kapak görseli, zengin metin editörü
+- Sayfa içerikleri: Ana Sayfa, Danışma Merkezimiz, Ben Kimim
+- Site Ayarları: WhatsApp numarası ve hazır mesajı, iletişim bilgileri, harita konumu, sosyal medya, KVKK metni
+- Gelen kutusu: iletişim formundan gelen mesajlar (sadece adminler görebilir)
+- Yüklenen görsellerin otomatik farklı boyutları (kart, kapak, küçük resim)
 
-### Development
+## Mimari
 
-1. First [clone the repo](#clone) if you have not done so already
-2. `cd my-project && cp .env.example .env` to copy the example environment variables. You'll need to add the `MONGODB_URL` from your Cloud project to your `.env` if you want to use S3 storage and the MongoDB database that was created for you.
+Tek bir Next.js uygulaması içinde iki bölüm bulunur:
 
-3. `pnpm install && pnpm dev` to install dependencies and start the dev server
-4. open `http://localhost:3000` to open the app in your browser
+```
+src/
+├── app/
+│   ├── (frontend)/        # Ziyaretçilerin gördüğü site
+│   └── (payload)/         # Yönetim paneli ve REST/GraphQL API (Payload tarafından yönetilir)
+├── collections/           # Veri modelleri: Makaleler, Medya, İletişim Mesajları, Kullanıcılar
+├── globals/               # Tek kayıtlık içerikler: Site Ayarları, Ana Sayfa, Danışma Merkezimiz, Ben Kimim
+├── access/                # Erişim kuralları (kim neyi okuyabilir/değiştirebilir)
+├── hooks/                 # İçerik değişince site önbelleğini tazeleyen hook'lar
+├── actions/               # Server Action'lar (iletişim formu)
+├── components/            # Arayüz bileşenleri
+├── lib/                   # Veri sorguları ve gezinme yardımcıları
+├── utilities/             # Saf yardımcı fonksiyonlar (slug, tarih, görsel)
+├── seed/                  # Örnek içerik betiği
+└── payload.config.ts      # Payload ana ayarları
+```
 
-That's it! Changes made in `./src` will be reflected in your app. Follow the on-screen instructions to login and create your first admin user. Then check out [Production](#production) once you're ready to build and serve your app, and [Deployment](#deployment) when you're ready to go live.
+**Önemli kararlar**
 
-#### Docker (Optional)
+- **Statik üretim + anında tazeleme:** Sayfalar build sırasında önceden üretilir ve önbellekten sunulur. Admin panelde bir içerik değiştiğinde `afterChange` hook'u `revalidatePath` çağırır; site bir sonraki ziyarette güncel içerikle yeniden üretilir. Böylece hem hız hem güncellik sağlanır.
+- **Veriye doğrudan erişim:** Sayfalar Payload'ın Local API'sini kullanır; HTTP isteği olmadan doğrudan veritabanından okunur.
+- **Güvenlik:** Ziyaretçiler yalnızca yayınlanmış makaleleri görebilir; iletişim mesajları dış API'ye kapalıdır ve kayıtlar yalnızca sunucu tarafındaki form işleyicisi üzerinden oluşturulur.
 
-If you prefer to use Docker for local development instead of a local MongoDB instance, the provided docker-compose.yml file can be used.
+## Kurulum
 
-To do so, follow these steps:
+Gereksinim: Node.js 20.18+ (önerilen 22)
 
-- Modify the `MONGODB_URL` in your `.env` file to `mongodb://127.0.0.1/<dbname>`
-- Modify the `docker-compose.yml` file's `MONGODB_URL` to match the above `<dbname>`
-- Run `docker-compose up` to start the database, optionally pass `-d` to run in the background.
+```bash
+npm install
+cp .env.example .env      # PAYLOAD_SECRET değerini değiştirin
+npm run dev               # http://localhost:3000
+```
 
-## How it works
+İlk açılışta `http://localhost:3000/admin` adresinden ilk admin hesabını oluşturun.
 
-The Payload config is tailored specifically to the needs of most websites. It is pre-configured in the following ways:
+Tasarımı örnek içerikle görmek için (veritabanında makale yoksa çalışır, mevcut içeriği değiştirmez):
 
-### Collections
+```bash
+npm run seed
+```
 
-See the [Collections](https://payloadcms.com/docs/configuration/collections) docs for details on how to extend this functionality.
+## Komutlar
 
-- #### Users (Authentication)
+| Komut | Açıklama |
+| --- | --- |
+| `npm run dev` | Geliştirme sunucusu |
+| `npm run build` / `npm start` | Canlı derleme ve çalıştırma |
+| `npm run seed` | Örnek içerik yükler |
+| `npm run lint` | ESLint |
+| `npm run test:int` | Birim ve erişim kuralı testleri (Vitest) |
+| `npm run test:e2e` | Uçtan uca tarayıcı testleri (Playwright) |
+| `npm run generate:types` | Veri modelinden TypeScript tiplerini üretir |
 
-  Users are auth-enabled collections that have access to the admin panel.
+## Testler
 
-  For additional help, see the official [Auth Example](https://github.com/payloadcms/payload/tree/3.x/examples/auth) or the [Authentication](https://payloadcms.com/docs/authentication/overview#authentication-overview) docs.
+- **Birim testleri:** slug üretimi, WhatsApp bağlantısı ve görünürlük kuralı, okuma süresi
+- **Erişim testleri:** ziyaretçinin mesajları ve taslakları görememesi, ayarları değiştirememesi
+- **Uçtan uca testler:** şeffaf başlık çubuğu, bölüm sırası, makale kartları, WhatsApp kuralları, iletişim formu doğrulaması ve gönderimi, 404 sayfası, yönetim paneli
 
-- #### Media
-
-  This is the uploads enabled collection. It features pre-configured sizes, focal point and manual resizing to help you manage your pictures.
-
-### Docker
-
-Alternatively, you can use [Docker](https://www.docker.com) to spin up this template locally. To do so, follow these steps:
-
-1. Follow [steps 1 and 2 from above](#development), the docker-compose file will automatically use the `.env` file in your project root
-1. Next run `docker-compose up`
-1. Follow [steps 4 and 5 from above](#development) to login and create your first admin user
-
-That's it! The Docker instance will help you get up and running quickly while also standardizing the development environment across your teams.
-
-## Questions
-
-If you have any issues or questions, reach out to us on [Discord](https://discord.com/invite/payload) or start a [GitHub discussion](https://github.com/payloadcms/payload/discussions).
+İlk kez çalıştırmadan önce: `npx playwright install chromium`
