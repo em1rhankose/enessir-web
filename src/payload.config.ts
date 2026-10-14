@@ -10,6 +10,7 @@ import { Articles } from './collections/Articles'
 import { ContactMessages } from './collections/ContactMessages'
 import { Media } from './collections/Media'
 import { Users } from './collections/Users'
+import { getEmailAdapter } from './email'
 import { About } from './globals/About'
 import { CounselingCenter } from './globals/CounselingCenter'
 import { HomePage } from './globals/HomePage'
@@ -36,6 +37,7 @@ export default buildConfig({
   collections: [Articles, Media, ContactMessages, Users],
   globals: [HomePage, CounselingCenter, About, SiteSettings],
   editor: lexicalEditor(),
+  email: getEmailAdapter(),
   secret: process.env.PAYLOAD_SECRET || '',
   typescript: {
     outputFile: path.resolve(dirname, 'payload-types.ts'),
