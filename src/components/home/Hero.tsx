@@ -43,12 +43,12 @@ export const Hero = ({ title, subtitle, buttonText, image, portrait }: HeroProps
       className="absolute inset-0 bg-gradient-to-b from-black/45 via-black/20 to-black/50"
     />
 
-    {/* Portre varken yazılar biraz daha geniş bir alanda, hafifçe sola kayık durur. */}
+    {/* Başlık çubuğuyla aynı hizada; portre varken yazı solda, portre sağda. */}
     <div
-      className={`relative grid min-h-[100svh] ${
+      className={`container-page relative grid min-h-[100svh] ${
         portrait
-          ? 'mx-auto w-full max-w-[80rem] grid-rows-[auto_1fr] px-5 pt-28 md:px-10 lg:grid-cols-[1.15fr_1fr] lg:grid-rows-1 lg:gap-8 lg:pt-0'
-          : 'container-page items-center pt-24 pb-28'
+          ? 'grid-rows-[auto_1fr] pt-28 lg:grid-cols-[1.15fr_1fr] lg:grid-rows-1 lg:gap-8 lg:pt-0'
+          : 'items-center pt-24 pb-28'
       }`}
     >
       <div className={portrait ? 'self-center pb-8 lg:pb-0' : ''}>

@@ -26,7 +26,7 @@
   --color-clay: #c0805f;
   --color-clay-dark: #a96a4b;
 
-  --container-content: 72rem;
+  --container-content: 78rem;
 }
 
 @layer base {
@@ -71,6 +71,13 @@
   @media (min-width: 768px) {
     .container-page {
       padding-inline: 2rem;
+    }
+  }
+
+  /* Geniş ekranlarda içerik kenara yapışmasın diye daha cömert boşluk. */
+  @media (min-width: 1024px) {
+    .container-page {
+      padding-inline: 3rem;
     }
   }
 
