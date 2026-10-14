@@ -1,0 +1,70 @@
+import type { GlobalConfig } from 'payload'
+
+import { anyone, authenticated } from '@/access'
+
+export const HomePage: GlobalConfig = {
+  slug: 'home-page',
+  label: 'Ana Sayfa',
+  admin: {
+    group: 'Sayfalar',
+  },
+  access: {
+    read: anyone,
+    update: authenticated,
+  },
+  fields: [
+    {
+      type: 'collapsible',
+      label: 'Karşılama alanı',
+      fields: [
+        {
+          name: 'heroTitle',
+          label: 'Başlık',
+          type: 'text',
+          required: true,
+          defaultValue: 'Kendinize alan açın.',
+        },
+        {
+          name: 'heroSubtitle',
+          label: 'Alt başlık',
+          type: 'textarea',
+          defaultValue:
+            'Bireysel terapi ve psikolojik danışmanlıkla, kendinizi daha iyi anlamanız için güvenli bir alan.',
+        },
+        {
+          name: 'heroImage',
+          label: 'Arka plan görseli',
+          type: 'upload',
+          relationTo: 'media',
+        },
+        {
+          name: 'heroButtonText',
+          label: 'Buton metni',
+          type: 'text',
+          defaultValue: 'Randevu Al',
+        },
+      ],
+    },
+    {
+      type: 'collapsible',
+      label: 'Bölüm başlıkları',
+      admin: {
+        description: 'Ana sayfada aşağı kaydırdıkça görünen bölümlerin başlıkları.',
+      },
+      fields: [
+        {
+          name: 'articlesHeading',
+          label: 'Makaleler bölümü başlığı',
+          type: 'text',
+          defaultValue: 'Son Makaleler',
+        },
+        {
+          name: 'contactHeading',
+          label: 'İletişim bölümü başlığı',
+          type: 'text',
+          defaultValue: 'Bize Ulaşın',
+        },
+      ],
+    },
+  ],
+}
