@@ -42,6 +42,16 @@ export const HomePage: GlobalConfig = {
           relationTo: 'media',
         },
         {
+          name: 'heroPortrait',
+          label: 'Portre fotoğrafı',
+          type: 'upload',
+          relationTo: 'media',
+          admin: {
+            description:
+              'Karşılama alanının sağında görünür. Arka planı kaldırılmış (şeffaf) PNG, belden yukarı çekilmiş ve en az 1200px yüksekliğinde olmalı.',
+          },
+        },
+        {
           name: 'heroButtonText',
           label: 'Buton metni',
           type: 'text',

@@ -26,6 +26,8 @@ export default async function HomePage() {
   ])
 
   const heroImage = getImage(home.heroImage, 'hero')
+  // Portre şeffaf PNG olduğu için orijinal dosya kullanılır; Next.js zaten ekrana uygun boyutu üretir.
+  const heroPortrait = getImage(home.heroPortrait)
   const centerImage = getImage(center.gallery?.[0], 'card')
   const aboutPhoto = getImage(about.photo, 'card')
 
@@ -36,6 +38,7 @@ export default async function HomePage() {
         subtitle={home.heroSubtitle}
         buttonText={home.heroButtonText}
         image={heroImage}
+        portrait={heroPortrait}
       />
 
       {/* Danışma Merkezimiz */}

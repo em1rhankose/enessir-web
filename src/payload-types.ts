@@ -496,6 +496,10 @@ export interface HomePage {
   heroTitle: string;
   heroSubtitle?: string | null;
   heroImage?: (number | null) | Media;
+  /**
+   * Karşılama alanının sağında görünür. Arka planı kaldırılmış (şeffaf) PNG, belden yukarı çekilmiş ve en az 1200px yüksekliğinde olmalı.
+   */
+  heroPortrait?: (number | null) | Media;
   heroButtonText?: string | null;
   articlesHeading?: string | null;
   contactHeading?: string | null;
@@ -647,6 +651,7 @@ export interface HomePageSelect<T extends boolean = true> {
   heroTitle?: T;
   heroSubtitle?: T;
   heroImage?: T;
+  heroPortrait?: T;
   heroButtonText?: T;
   articlesHeading?: T;
   contactHeading?: T;
