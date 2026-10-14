@@ -592,6 +592,10 @@ export interface SiteSetting {
   id: number;
   siteName: string;
   /**
+   * Google arama sonuçlarında site adının altında görünen kısa açıklama (en fazla 160 karakter).
+   */
+  seoDescription?: string | null;
+  /**
    * Ülke koduyla, sadece rakam: örn. 905321234567. Boş bırakılırsa WhatsApp ikonu gizlenir.
    */
   whatsappNumber?: string | null;
@@ -614,6 +618,24 @@ export interface SiteSetting {
         id?: string | null;
       }[]
     | null;
+  /**
+   * İletişim formundaki onay kutusunun bağlantı verdiği sayfa. Metnin bir hukukçu tarafından kontrol edilmesi önerilir.
+   */
+  kvkkText?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
   updatedAt?: string | null;
   createdAt?: string | null;
 }
@@ -680,6 +702,7 @@ export interface AboutSelect<T extends boolean = true> {
  */
 export interface SiteSettingsSelect<T extends boolean = true> {
   siteName?: T;
+  seoDescription?: T;
   whatsappNumber?: T;
   whatsappMessage?: T;
   phone?: T;
@@ -694,6 +717,7 @@ export interface SiteSettingsSelect<T extends boolean = true> {
         url?: T;
         id?: T;
       };
+  kvkkText?: T;
   updatedAt?: T;
   createdAt?: T;
   globalType?: T;

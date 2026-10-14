@@ -2,6 +2,7 @@ import type { CollectionConfig } from 'payload'
 
 import { authenticated, authenticatedOrPublished } from '@/access'
 import { slugField } from '@/fields/slug'
+import { revalidateAfterChange, revalidateAfterDelete } from '@/hooks/revalidateSite'
 
 export const Articles: CollectionConfig = {
   slug: 'articles',
@@ -19,6 +20,10 @@ export const Articles: CollectionConfig = {
     create: authenticated,
     update: authenticated,
     delete: authenticated,
+  },
+  hooks: {
+    afterChange: [revalidateAfterChange],
+    afterDelete: [revalidateAfterDelete],
   },
   defaultSort: '-publishedAt',
   versions: {

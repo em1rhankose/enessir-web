@@ -1,6 +1,7 @@
 import type { GlobalConfig } from 'payload'
 
 import { anyone, authenticated } from '@/access'
+import { revalidateGlobalAfterChange } from '@/hooks/revalidateSite'
 
 export const HomePage: GlobalConfig = {
   slug: 'home-page',
@@ -11,6 +12,9 @@ export const HomePage: GlobalConfig = {
   access: {
     read: anyone,
     update: authenticated,
+  },
+  hooks: {
+    afterChange: [revalidateGlobalAfterChange],
   },
   fields: [
     {

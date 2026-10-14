@@ -1,6 +1,7 @@
 import type { GlobalConfig } from 'payload'
 
 import { anyone, authenticated } from '@/access'
+import { revalidateGlobalAfterChange } from '@/hooks/revalidateSite'
 
 export const SiteSettings: GlobalConfig = {
   slug: 'site-settings',
@@ -12,6 +13,9 @@ export const SiteSettings: GlobalConfig = {
     read: anyone,
     update: authenticated,
   },
+  hooks: {
+    afterChange: [revalidateGlobalAfterChange],
+  },
   fields: [
     {
       name: 'siteName',
@@ -19,6 +23,17 @@ export const SiteSettings: GlobalConfig = {
       type: 'text',
       required: true,
       defaultValue: 'Psikolog Enes Sir',
+    },
+    {
+      name: 'seoDescription',
+      label: 'Site açıklaması (SEO)',
+      type: 'textarea',
+      maxLength: 160,
+      defaultValue:
+        'Psikolog Enes Sir ile bireysel terapi ve psikolojik danışmanlık. Randevu ve bilgi için iletişime geçin.',
+      admin: {
+        description: 'Google arama sonuçlarında site adının altında görünen kısa açıklama (en fazla 160 karakter).',
+      },
     },
     {
       type: 'collapsible',
@@ -96,6 +111,24 @@ export const SiteSettings: GlobalConfig = {
             },
             { name: 'url', label: 'Bağlantı', type: 'text', required: true },
           ],
+        },
+      ],
+    },
+    {
+      type: 'collapsible',
+      label: 'Yasal',
+      admin: {
+        initCollapsed: true,
+      },
+      fields: [
+        {
+          name: 'kvkkText',
+          label: 'KVKK aydınlatma metni',
+          type: 'richText',
+          admin: {
+            description:
+              'İletişim formundaki onay kutusunun bağlantı verdiği sayfa. Metnin bir hukukçu tarafından kontrol edilmesi önerilir.',
+          },
         },
       ],
     },
