@@ -1,11 +1,12 @@
-import { test, expect, Page } from '@playwright/test'
-import { login } from '../helpers/login'
-import { seedTestUser, cleanupTestUser, testUser } from '../helpers/seedUser'
+import { expect, Page, test } from '@playwright/test'
 
-test.describe('Admin Panel', () => {
+import { login } from '../helpers/login'
+import { cleanupTestUser, seedTestUser, testUser } from '../helpers/seedUser'
+
+test.describe('Admin paneli', () => {
   let page: Page
 
-  test.beforeAll(async ({ browser }, testInfo) => {
+  test.beforeAll(async ({ browser }) => {
     await seedTestUser()
 
     const context = await browser.newContext()
@@ -18,24 +19,21 @@ test.describe('Admin Panel', () => {
     await cleanupTestUser()
   })
 
-  test('can navigate to dashboard', async () => {
-    await page.goto('http://localhost:3000/admin')
-    await expect(page).toHaveURL('http://localhost:3000/admin')
-    const dashboardArtifact = page.locator('span[title="Dashboard"]').first()
-    await expect(dashboardArtifact).toBeVisible()
+  test('Türkçe menüde içerik grupları görünür', async () => {
+    await page.goto('/admin')
+    const nav = page.locator('nav')
+    for (const label of ['Makaleler', 'İletişim Mesajları', 'Ana Sayfa', 'Site Ayarları']) {
+      await expect(nav.getByText(label, { exact: true }).first()).toBeVisible()
+    }
   })
 
-  test('can navigate to list view', async () => {
-    await page.goto('http://localhost:3000/admin/collections/users')
-    await expect(page).toHaveURL('http://localhost:3000/admin/collections/users')
-    const listViewArtifact = page.locator('h1', { hasText: 'Users' }).first()
-    await expect(listViewArtifact).toBeVisible()
+  test('makale listesi açılır', async () => {
+    await page.goto('/admin/collections/articles')
+    await expect(page.locator('h1', { hasText: 'Makaleler' }).first()).toBeVisible()
   })
 
-  test('can navigate to edit view', async () => {
-    await page.goto('http://localhost:3000/admin/collections/users/create')
-    await expect(page).toHaveURL(/\/admin\/collections\/users\/[a-zA-Z0-9-_]+/)
-    const editViewArtifact = page.locator('input[name="email"]')
-    await expect(editViewArtifact).toBeVisible()
+  test('site ayarlarında WhatsApp numarası alanı vardır', async () => {
+    await page.goto('/admin/globals/site-settings')
+    await expect(page.locator('input[name="whatsappNumber"]')).toBeAttached()
   })
 })

@@ -26,6 +26,6 @@ export async function login({
 
   await page.waitForURL(`${serverURL}/admin`)
 
-  const dashboardArtifact = page.locator('span[title="Dashboard"]')
-  await expect(dashboardArtifact).toBeVisible()
+  // Panel Türkçe olduğu için metne değil, giriş sonrası görünen menüye bakılır.
+  await expect(page.locator('nav').first()).toBeVisible()
 }
