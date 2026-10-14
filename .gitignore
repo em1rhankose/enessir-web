@@ -40,6 +40,10 @@ next-env.d.ts
 
 .env
 
+# local sqlite database
+*.db
+*.db-journal
+
 /media
 
 # Playwright
