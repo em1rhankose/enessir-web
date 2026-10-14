@@ -497,7 +497,7 @@ export interface HomePage {
   heroSubtitle?: string | null;
   heroImage?: (number | null) | Media;
   /**
-   * Karşılama alanının sağında görünür. Arka planı kaldırılmış (şeffaf) PNG, belden yukarı çekilmiş ve en az 1200px yüksekliğinde olmalı.
+   * Karşılama alanının sağında görünür. Arka planı kaldırılmış (şeffaf) PNG, dikey, ideal 1500×2000 px (en az 1200×1600 px), 5 MB altı. Kenarlardaki boşluğu kırpın; alt kenar bel/göğüs hizasından düz kesilmiş olsun.
    */
   heroPortrait?: (number | null) | Media;
   heroButtonText?: string | null;
