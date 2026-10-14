@@ -11,7 +11,11 @@ export const Users: CollectionConfig = {
     defaultColumns: ['name', 'email'],
     group: 'Yönetim',
   },
-  auth: true,
+  auth: {
+    // Şifre tahmin saldırılarına karşı: 5 hatalı denemeden sonra hesap 10 dakika kilitlenir.
+    maxLoginAttempts: 5,
+    lockTime: 10 * 60 * 1000,
+  },
   fields: [
     // E-posta ve şifre alanlarını `auth: true` otomatik ekler.
     {
