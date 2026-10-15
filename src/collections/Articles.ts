@@ -1,6 +1,7 @@
 import type { CollectionConfig } from 'payload'
 
 import { authenticated, authenticatedOrPublished } from '@/access'
+import { seoField } from '@/fields/seo'
 import { slugField } from '@/fields/slug'
 import { revalidateAfterChange, revalidateAfterDelete } from '@/hooks/revalidateSite'
 
@@ -60,6 +61,7 @@ export const Articles: CollectionConfig = {
       type: 'richText',
       required: true,
     },
+    seoField(),
     slugField(),
     {
       name: 'publishedAt',

@@ -67,6 +67,7 @@ export interface Config {
   };
   blocks: {};
   collections: {
+    services: Service;
     articles: Article;
     media: Media;
     'contact-messages': ContactMessage;
@@ -78,6 +79,7 @@ export interface Config {
   };
   collectionsJoins: {};
   collectionsSelect: {
+    services: ServicesSelect<false> | ServicesSelect<true>;
     articles: ArticlesSelect<false> | ArticlesSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
     'contact-messages': ContactMessagesSelect<false> | ContactMessagesSelect<true>;
@@ -132,18 +134,23 @@ export interface UserAuthOperations {
   };
 }
 /**
+ * Her hizmet sitede kendi sayfasıyla görünür. Sıralamayı "Sıra" alanıyla belirleyebilirsiniz.
+ *
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "articles".
+ * via the `definition` "services".
  */
-export interface Article {
+export interface Service {
   id: number;
   title: string;
   /**
-   * Makale kartlarında ve Google arama sonuçlarında görünen kısa açıklama.
+   * Hizmet kartlarında ve listelerde görünen 1–2 cümle.
    */
-  excerpt: string;
-  coverImage: number | Media;
-  content: {
+  summary: string;
+  image?: (number | null) | Media;
+  /**
+   * Bu hizmet kimler için, süreç nasıl işliyor, seanslar nasıl geçiyor gibi konular.
+   */
+  content?: {
     root: {
       type: string;
       children: {
@@ -157,15 +164,42 @@ export interface Article {
       version: number;
     };
     [k: string]: unknown;
+  } | null;
+  /**
+   * Danışanların gerçekten sorduğu sorular. Kısa ve doğrudan cevaplar hem Google’da hem yapay zekâ aramalarında öne çıkar.
+   */
+  faqs?:
+    | {
+        question: string;
+        answer: string;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * Boş bırakırsanız sayfanın kendi başlığı ve özeti kullanılır.
+   */
+  seo?: {
+    /**
+     * Google’da mavi bağlantı olarak görünen başlık (en fazla 60 karakter). Sonuna site adı otomatik eklenir.
+     */
+    title?: string | null;
+    /**
+     * Başlığın altında görünen 1–2 cümle (en fazla 160 karakter). Anahtar kelimeleri liste olarak değil, doğal bir cümle içinde kullanın.
+     */
+    description?: string | null;
+    /**
+     * Bağlantı WhatsApp veya sosyal medyada paylaşıldığında görünen görsel (ideal 1200×630 px).
+     */
+    image?: (number | null) | Media;
   };
   /**
    * Boş bırakırsanız başlıktan otomatik oluşturulur.
    */
   slug?: string | null;
   /**
-   * Boş bırakırsanız yayınladığınız gün atanır.
+   * Küçük sayı önce gösterilir.
    */
-  publishedAt?: string | null;
+  order?: number | null;
   updatedAt: string;
   createdAt: string;
   _status?: ('draft' | 'published') | null;
@@ -226,6 +260,62 @@ export interface Media {
       filename?: string | null;
     };
   };
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "articles".
+ */
+export interface Article {
+  id: number;
+  title: string;
+  /**
+   * Makale kartlarında ve Google arama sonuçlarında görünen kısa açıklama.
+   */
+  excerpt: string;
+  coverImage: number | Media;
+  content: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  };
+  /**
+   * Boş bırakırsanız sayfanın kendi başlığı ve özeti kullanılır.
+   */
+  seo?: {
+    /**
+     * Google’da mavi bağlantı olarak görünen başlık (en fazla 60 karakter). Sonuna site adı otomatik eklenir.
+     */
+    title?: string | null;
+    /**
+     * Başlığın altında görünen 1–2 cümle (en fazla 160 karakter). Anahtar kelimeleri liste olarak değil, doğal bir cümle içinde kullanın.
+     */
+    description?: string | null;
+    /**
+     * Bağlantı WhatsApp veya sosyal medyada paylaşıldığında görünen görsel (ideal 1200×630 px).
+     */
+    image?: (number | null) | Media;
+  };
+  /**
+   * Boş bırakırsanız başlıktan otomatik oluşturulur.
+   */
+  slug?: string | null;
+  /**
+   * Boş bırakırsanız yayınladığınız gün atanır.
+   */
+  publishedAt?: string | null;
+  updatedAt: string;
+  createdAt: string;
+  _status?: ('draft' | 'published') | null;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -294,6 +384,10 @@ export interface PayloadLockedDocument {
   id: number;
   document?:
     | ({
+        relationTo: 'services';
+        value: number | Service;
+      } | null)
+    | ({
         relationTo: 'articles';
         value: number | Article;
       } | null)
@@ -353,6 +447,35 @@ export interface PayloadMigration {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "services_select".
+ */
+export interface ServicesSelect<T extends boolean = true> {
+  title?: T;
+  summary?: T;
+  image?: T;
+  content?: T;
+  faqs?:
+    | T
+    | {
+        question?: T;
+        answer?: T;
+        id?: T;
+      };
+  seo?:
+    | T
+    | {
+        title?: T;
+        description?: T;
+        image?: T;
+      };
+  slug?: T;
+  order?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  _status?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "articles_select".
  */
 export interface ArticlesSelect<T extends boolean = true> {
@@ -360,6 +483,13 @@ export interface ArticlesSelect<T extends boolean = true> {
   excerpt?: T;
   coverImage?: T;
   content?: T;
+  seo?:
+    | T
+    | {
+        title?: T;
+        description?: T;
+        image?: T;
+      };
   slug?: T;
   publishedAt?: T;
   updatedAt?: T;
@@ -513,6 +643,34 @@ export interface HomePage {
   heroButtonText?: string | null;
   articlesHeading?: string | null;
   contactHeading?: string | null;
+  faqHeading?: string | null;
+  /**
+   * Danışanların gerçekten sorduğu sorular. Kısa ve doğrudan cevaplar hem Google’da hem yapay zekâ aramalarında öne çıkar.
+   */
+  faqs?:
+    | {
+        question: string;
+        answer: string;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * Boş bırakırsanız sayfanın kendi başlığı ve özeti kullanılır.
+   */
+  seo?: {
+    /**
+     * Google’da mavi bağlantı olarak görünen başlık (en fazla 60 karakter). Sonuna site adı otomatik eklenir.
+     */
+    title?: string | null;
+    /**
+     * Başlığın altında görünen 1–2 cümle (en fazla 160 karakter). Anahtar kelimeleri liste olarak değil, doğal bir cümle içinde kullanın.
+     */
+    description?: string | null;
+    /**
+     * Bağlantı WhatsApp veya sosyal medyada paylaşıldığında görünen görsel (ideal 1200×630 px).
+     */
+    image?: (number | null) | Media;
+  };
   updatedAt?: string | null;
   createdAt?: string | null;
 }
@@ -553,6 +711,23 @@ export interface CounselingCenter {
       }[]
     | null;
   gallery?: (number | Media)[] | null;
+  /**
+   * Boş bırakırsanız sayfanın kendi başlığı ve özeti kullanılır.
+   */
+  seo?: {
+    /**
+     * Google’da mavi bağlantı olarak görünen başlık (en fazla 60 karakter). Sonuna site adı otomatik eklenir.
+     */
+    title?: string | null;
+    /**
+     * Başlığın altında görünen 1–2 cümle (en fazla 160 karakter). Anahtar kelimeleri liste olarak değil, doğal bir cümle içinde kullanın.
+     */
+    description?: string | null;
+    /**
+     * Bağlantı WhatsApp veya sosyal medyada paylaşıldığında görünen görsel (ideal 1200×630 px).
+     */
+    image?: (number | null) | Media;
+  };
   updatedAt?: string | null;
   createdAt?: string | null;
 }
@@ -595,6 +770,23 @@ export interface About {
         id?: string | null;
       }[]
     | null;
+  /**
+   * Boş bırakırsanız sayfanın kendi başlığı ve özeti kullanılır.
+   */
+  seo?: {
+    /**
+     * Google’da mavi bağlantı olarak görünen başlık (en fazla 60 karakter). Sonuna site adı otomatik eklenir.
+     */
+    title?: string | null;
+    /**
+     * Başlığın altında görünen 1–2 cümle (en fazla 160 karakter). Anahtar kelimeleri liste olarak değil, doğal bir cümle içinde kullanın.
+     */
+    description?: string | null;
+    /**
+     * Bağlantı WhatsApp veya sosyal medyada paylaşıldığında görünen görsel (ideal 1200×630 px).
+     */
+    image?: (number | null) | Media;
+  };
   updatedAt?: string | null;
   createdAt?: string | null;
 }
@@ -621,10 +813,23 @@ export interface SiteSetting {
   email?: string | null;
   address?: string | null;
   /**
+   * Yerel aramalar için (örn. "Kadıköy psikolog").
+   */
+  district?: string | null;
+  city?: string | null;
+  /**
    * Google Haritalar'da aranacak adres veya koordinat (örn. "41.0082,28.9784"). İletişim sayfasındaki harita bunu gösterir.
    */
   mapQuery?: string | null;
   workingHours?: string | null;
+  /**
+   * Google Haritalar’daki işletme sayfanızın bağlantısı. Google’ın siteyle işletme profilinizi eşleştirmesine yardımcı olur.
+   */
+  googleBusinessUrl?: string | null;
+  /**
+   * Site bağlantısı WhatsApp veya sosyal medyada paylaşıldığında görünen görsel (ideal 1200×630 px). Sayfanın kendi görseli yoksa bu kullanılır.
+   */
+  defaultShareImage?: (number | null) | Media;
   socialLinks?:
     | {
         platform: 'instagram' | 'linkedin' | 'youtube' | 'x' | 'facebook';
@@ -665,6 +870,21 @@ export interface HomePageSelect<T extends boolean = true> {
   heroButtonText?: T;
   articlesHeading?: T;
   contactHeading?: T;
+  faqHeading?: T;
+  faqs?:
+    | T
+    | {
+        question?: T;
+        answer?: T;
+        id?: T;
+      };
+  seo?:
+    | T
+    | {
+        title?: T;
+        description?: T;
+        image?: T;
+      };
   updatedAt?: T;
   createdAt?: T;
   globalType?: T;
@@ -685,6 +905,13 @@ export interface CounselingCenterSelect<T extends boolean = true> {
         id?: T;
       };
   gallery?: T;
+  seo?:
+    | T
+    | {
+        title?: T;
+        description?: T;
+        image?: T;
+      };
   updatedAt?: T;
   createdAt?: T;
   globalType?: T;
@@ -707,6 +934,13 @@ export interface AboutSelect<T extends boolean = true> {
         year?: T;
         id?: T;
       };
+  seo?:
+    | T
+    | {
+        title?: T;
+        description?: T;
+        image?: T;
+      };
   updatedAt?: T;
   createdAt?: T;
   globalType?: T;
@@ -723,8 +957,12 @@ export interface SiteSettingsSelect<T extends boolean = true> {
   phone?: T;
   email?: T;
   address?: T;
+  district?: T;
+  city?: T;
   mapQuery?: T;
   workingHours?: T;
+  googleBusinessUrl?: T;
+  defaultShareImage?: T;
   socialLinks?:
     | T
     | {

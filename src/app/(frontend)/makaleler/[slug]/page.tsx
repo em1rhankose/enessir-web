@@ -3,13 +3,18 @@ import Link from 'next/link'
 import { notFound } from 'next/navigation'
 
 import { ArticleCard } from '@/components/ArticleCard'
+import { AuthorBox } from '@/components/AuthorBox'
 import { ArrowLeftIcon } from '@/components/Icons'
+import { JsonLd } from '@/components/JsonLd'
 import { getFramedCrop, MediaFrame } from '@/components/MediaFrame'
 import { Reveal } from '@/components/Reveal'
 import { RichText } from '@/components/RichText'
-import { getAllArticleSlugs, getArticleBySlug, getLatestArticles } from '@/lib/queries'
+import { getAbout, getAllArticleSlugs, getArticleBySlug, getLatestArticles } from '@/lib/queries'
+import { buildPageMetadata } from '@/lib/seo'
+import { articleSchema } from '@/lib/structuredData'
 import { formatDate, getReadingMinutes } from '@/utilities/format'
-import { getImage, isMedia } from '@/utilities/media'
+import { getServerUrl } from '@/utilities/getServerUrl'
+import { isMedia } from '@/utilities/media'
 
 /** Yayınlanmış makalelerin sayfaları build sırasında önceden üretilir; yenileri ilk ziyarette üretilir. */
 export async function generateStaticParams() {
@@ -22,25 +27,26 @@ export async function generateMetadata({ params }: PageProps<'/makaleler/[slug]'
   const article = await getArticleBySlug(slug)
   if (!article) return {}
 
-  const image = getImage(article.coverImage, 'card')
-
-  return {
+  return buildPageMetadata({
+    seo: article.seo,
     title: article.title,
     description: article.excerpt,
-    alternates: { canonical: `/makaleler/${slug}` },
-    openGraph: {
-      type: 'article',
-      title: article.title,
-      description: article.excerpt,
-      publishedTime: article.publishedAt ?? undefined,
-      images: image ? [{ url: image.src, width: image.width, height: image.height, alt: image.alt }] : undefined,
-    },
-  }
+    image: article.coverImage,
+    path: `/makaleler/${slug}`,
+    type: 'article',
+    publishedTime: article.publishedAt,
+    modifiedTime: article.updatedAt,
+  })
 }
+
+/** Makale yayından en az bir gün sonra düzenlendiyse güncelleme tarihi gösterilir. */
+const wasUpdatedLater = (publishedAt?: string | null, updatedAt?: string | null) =>
+  Boolean(publishedAt && updatedAt) &&
+  new Date(updatedAt as string).getTime() - new Date(publishedAt as string).getTime() > 24 * 60 * 60 * 1000
 
 export default async function ArticlePage({ params }: PageProps<'/makaleler/[slug]'>) {
   const { slug } = await params
-  const article = await getArticleBySlug(slug)
+  const [article, about] = await Promise.all([getArticleBySlug(slug), getAbout()])
 
   if (!article) notFound()
 
@@ -48,6 +54,7 @@ export default async function ArticlePage({ params }: PageProps<'/makaleler/[slu
 
   return (
     <article>
+      <JsonLd data={articleSchema(article, getServerUrl())} />
       <header className="bg-sand pt-32 pb-14 md:pt-40">
         <div className="container-page max-w-3xl">
           <Reveal>
@@ -64,6 +71,14 @@ export default async function ArticlePage({ params }: PageProps<'/makaleler/[slu
               <time dateTime={article.publishedAt ?? undefined}>{formatDate(article.publishedAt)}</time>
               <span className="mx-2">·</span>
               {getReadingMinutes(article.content)} dk okuma
+              <span className="mx-2">·</span>
+              {about.fullName}
+              {wasUpdatedLater(article.publishedAt, article.updatedAt) && (
+                <>
+                  <br />
+                  Son güncelleme: <time dateTime={article.updatedAt}>{formatDate(article.updatedAt)}</time>
+                </>
+              )}
             </p>
           </Reveal>
         </div>
@@ -97,6 +112,8 @@ export default async function ArticlePage({ params }: PageProps<'/makaleler/[slu
 
       <div className="container-page max-w-3xl py-16 md:py-20">
         <RichText data={article.content} />
+
+        <AuthorBox about={about} />
 
         <aside className="mt-16 rounded-3xl bg-sage-50 p-8 ring-1 ring-sage-100 md:p-10">
           <p className="font-serif text-2xl text-ink">Bu konuda konuşmak ister misiniz?</p>

@@ -76,6 +76,18 @@ export const SiteSettings: GlobalConfig = {
         },
         { name: 'address', label: 'Adres', type: 'textarea' },
         {
+          type: 'row',
+          fields: [
+            {
+              name: 'district',
+              label: 'İlçe',
+              type: 'text',
+              admin: { description: 'Yerel aramalar için (örn. "Kadıköy psikolog").' },
+            },
+            { name: 'city', label: 'İl', type: 'text', defaultValue: 'İstanbul' },
+          ],
+        },
+        {
           name: 'mapQuery',
           label: 'Harita konumu',
           type: 'text',
@@ -85,7 +97,26 @@ export const SiteSettings: GlobalConfig = {
           },
         },
         { name: 'workingHours', label: 'Çalışma saatleri', type: 'text' },
+        {
+          name: 'googleBusinessUrl',
+          label: 'Google İşletme Profili bağlantısı',
+          type: 'text',
+          admin: {
+            description:
+              'Google Haritalar’daki işletme sayfanızın bağlantısı. Google’ın siteyle işletme profilinizi eşleştirmesine yardımcı olur.',
+          },
+        },
       ],
+    },
+    {
+      name: 'defaultShareImage',
+      label: 'Varsayılan paylaşım görseli',
+      type: 'upload',
+      relationTo: 'media',
+      admin: {
+        description:
+          'Site bağlantısı WhatsApp veya sosyal medyada paylaşıldığında görünen görsel (ideal 1200×630 px). Sayfanın kendi görseli yoksa bu kullanılır.',
+      },
     },
     {
       name: 'socialLinks',

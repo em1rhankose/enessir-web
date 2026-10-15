@@ -1,17 +1,26 @@
 import type { MetadataRoute } from 'next'
 
-import { getAllArticleSlugs } from '@/lib/queries'
+import { getAllArticleSlugs, getServices } from '@/lib/queries'
 import { getServerUrl } from '@/utilities/getServerUrl'
 
 /** Google'ın sitedeki sayfaları bulması için site haritası (/sitemap.xml). */
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = getServerUrl()
-  const articles = await getAllArticleSlugs()
+  const [articles, services] = await Promise.all([getAllArticleSlugs(), getServices()])
 
-  const staticPages = ['', '/danisma-merkezimiz', '/ben-kimim', '/makaleler', '/iletisim'].map((path) => ({
-    url: `${baseUrl}${path}`,
-    lastModified: new Date(),
-  }))
+  const staticPages = ['', '/danisma-merkezimiz', '/ben-kimim', '/hizmetler', '/makaleler', '/iletisim'].map(
+    (path) => ({
+      url: `${baseUrl}${path}`,
+      lastModified: new Date(),
+    }),
+  )
+
+  const servicePages = services
+    .filter((service) => service.slug)
+    .map((service) => ({
+      url: `${baseUrl}/hizmetler/${service.slug}`,
+      lastModified: new Date(service.updatedAt),
+    }))
 
   const articlePages = articles
     .filter((article) => article.slug)
@@ -20,5 +29,5 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       lastModified: new Date(article.updatedAt),
     }))
 
-  return [...staticPages, ...articlePages]
+  return [...staticPages, ...servicePages, ...articlePages]
 }

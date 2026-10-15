@@ -10,6 +10,7 @@ import { getPayload } from 'payload'
 import config from '../payload.config'
 import { generateImage, palettes } from './images'
 import { bulletList, heading, paragraph, quote, richText } from './lexical'
+import { sampleHomeFaqs, sampleServices } from './services'
 
 // Betik Next.js dışında çalıştığı için site önbelleğini temizleme hook'u atlanır.
 const context = { disableRevalidate: true }
@@ -96,6 +97,7 @@ const seed = async () => {
       heroButtonText: 'Randevu Al',
       articlesHeading: 'Son Makaleler',
       contactHeading: 'Bize Ulaşın',
+      faqs: sampleHomeFaqs,
     },
   })
 
@@ -120,14 +122,6 @@ const seed = async () => {
           'Süreç boyunca hedeflerinizi düzenli olarak birlikte değerlendiririz.',
         ]),
       ),
-      services: [
-        { title: 'Bireysel Terapi', description: 'Yetişkinlere yönelik, kişiye özel planlanan terapi süreci.' },
-        { title: 'Çift Terapisi', description: 'İlişkideki iletişim ve uyum sorunlarına yönelik görüşmeler.' },
-        { title: 'Ergen Danışmanlığı', description: 'Ergenlik dönemine özgü zorluklarda destek.' },
-        { title: 'Online Terapi', description: 'Bulunduğunuz yerden, güvenli görüntülü görüşmeyle.' },
-        { title: 'Kaygı ve Stres', description: 'Günlük hayatı zorlaştıran kaygıyla baş etme becerileri.' },
-        { title: 'Yas Danışmanlığı', description: 'Kayıp sonrası sürecin sağlıklı yaşanmasına destek.' },
-      ],
       gallery: [centerImage1.id, centerImage2.id, centerImage3.id],
     },
   })
@@ -271,6 +265,16 @@ const seed = async () => {
       collection: 'articles',
       context,
       data: { ...article, _status: 'published' },
+    })
+  }
+
+  payload.logger.info('Örnek hizmetler yazılıyor...')
+
+  for (const service of sampleServices) {
+    await payload.create({
+      collection: 'services',
+      context,
+      data: { ...service, _status: 'published' },
     })
   }
 

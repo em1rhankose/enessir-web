@@ -1,25 +1,33 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
 
+import { JsonLd } from '@/components/JsonLd'
 import { MediaFrame } from '@/components/MediaFrame'
 import { PageHeader } from '@/components/PageHeader'
 import { Reveal } from '@/components/Reveal'
 import { RichText } from '@/components/RichText'
-import { getAbout } from '@/lib/queries'
+import { getAbout, getServices, getSiteSettings } from '@/lib/queries'
+import { buildPageMetadata } from '@/lib/seo'
+import { personSchema } from '@/lib/structuredData'
+import { getServerUrl } from '@/utilities/getServerUrl'
 
 export async function generateMetadata(): Promise<Metadata> {
   const about = await getAbout()
-  return {
+  return buildPageMetadata({
+    seo: about.seo,
     title: 'Ben Kimim',
     description: about.summary ?? `${about.fullName} – ${about.jobTitle ?? 'Psikolog'}`,
-  }
+    image: about.photo,
+    path: '/ben-kimim',
+  })
 }
 
 export default async function AboutPage() {
-  const about = await getAbout()
+  const [about, settings, services] = await Promise.all([getAbout(), getSiteSettings(), getServices()])
 
   return (
     <>
+      <JsonLd data={personSchema(about, settings, services, getServerUrl())} />
       <PageHeader eyebrow="Ben Kimim" title={about.fullName} description={about.jobTitle} />
 
       <section className="py-20 md:py-24">

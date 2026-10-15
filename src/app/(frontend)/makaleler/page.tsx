@@ -6,11 +6,14 @@ import { ArrowLeftIcon, ArrowRightIcon } from '@/components/Icons'
 import { PageHeader } from '@/components/PageHeader'
 import { Reveal } from '@/components/Reveal'
 import { getArticlesPage } from '@/lib/queries'
+import { buildPageMetadata } from '@/lib/seo'
 
-export const metadata: Metadata = {
-  title: 'Makaleler',
-  description: 'Ruh sağlığı, ilişkiler ve kişisel gelişim üzerine yazılar.',
-}
+export const generateMetadata = (): Promise<Metadata> =>
+  buildPageMetadata({
+    title: 'Makaleler',
+    description: 'Ruh sağlığı, ilişkiler ve kişisel gelişim üzerine bir psikoloğun kaleminden yazılar.',
+    path: '/makaleler',
+  })
 
 export default async function ArticlesPage({ searchParams }: PageProps<'/makaleler'>) {
   const { sayfa } = await searchParams

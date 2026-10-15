@@ -2,14 +2,18 @@ import Link from 'next/link'
 
 import { ClockIcon, MailIcon, MapPinIcon, PhoneIcon, socialIcons } from '@/components/Icons'
 import { navItems } from '@/lib/navigation'
-import type { SiteSetting } from '@/payload-types'
+import type { Service, SiteSetting } from '@/payload-types'
 
-export const Footer = ({ settings }: { settings: SiteSetting }) => {
+export const Footer = ({ settings, services }: { settings: SiteSetting; services: Service[] }) => {
   const year = new Date().getFullYear()
 
   return (
     <footer className="bg-sage-900 text-sage-100">
-      <div className="container-page grid gap-12 py-16 md:grid-cols-3">
+      <div
+        className={`container-page grid gap-12 py-16 md:grid-cols-2 ${
+          services.length > 0 ? 'lg:grid-cols-4' : 'lg:grid-cols-3'
+        }`}
+      >
         <div>
           <p className="font-serif text-2xl text-white">{settings.siteName}</p>
           {settings.seoDescription && (
@@ -49,6 +53,21 @@ export const Footer = ({ settings }: { settings: SiteSetting }) => {
             ))}
           </ul>
         </nav>
+
+        {services.length > 0 && (
+          <nav aria-label="Hizmetler">
+            <p className="eyebrow text-sage-300!">Hizmetler</p>
+            <ul className="mt-5 space-y-3 text-sm">
+              {services.map((service) => (
+                <li key={service.id}>
+                  <Link href={`/hizmetler/${service.slug}`} className="transition-colors hover:text-white">
+                    {service.title}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </nav>
+        )}
 
         <div>
           <p className="eyebrow text-sage-300!">İletişim</p>

@@ -76,7 +76,31 @@ export const getAllArticleSlugs = async () => {
     where: publishedOnly,
     pagination: false,
     depth: 0,
-    select: { slug: true, updatedAt: true },
+    select: { slug: true, title: true, updatedAt: true },
   })
   return result.docs
 }
+
+/** Yayınlanmış tüm hizmetler, admin paneldeki "Sıra" alanına göre. */
+export const getServices = cache(async () => {
+  const payload = await getPayloadClient()
+  const result = await payload.find({
+    collection: 'services',
+    where: publishedOnly,
+    sort: ['order', 'title'],
+    pagination: false,
+    depth: 1,
+  })
+  return result.docs
+})
+
+export const getServiceBySlug = cache(async (slug: string) => {
+  const payload = await getPayloadClient()
+  const result = await payload.find({
+    collection: 'services',
+    where: { and: [publishedOnly, { slug: { equals: slug } }] },
+    limit: 1,
+    depth: 1,
+  })
+  return result.docs[0] ?? null
+})

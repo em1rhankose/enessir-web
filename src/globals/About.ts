@@ -1,6 +1,7 @@
 import type { GlobalConfig } from 'payload'
 
 import { anyone, authenticated } from '@/access'
+import { seoField } from '@/fields/seo'
 import { revalidateGlobalAfterChange } from '@/hooks/revalidateSite'
 
 export const About: GlobalConfig = {
@@ -73,5 +74,6 @@ export const About: GlobalConfig = {
         },
       ],
     },
+    seoField(),
   ],
 }

@@ -19,10 +19,12 @@ test.describe('Ana sayfa', () => {
   test('bölümler menü sırasıyla gelir ve en fazla 3 makale gösterilir', async ({ page }) => {
     await page.goto('/')
 
+    const menuSections = ['danisma-merkezimiz', 'ben-kimim', 'makaleler', 'iletisim']
     const sectionIds = await page.locator('main section[id]').evaluateAll((sections) =>
       sections.map((section) => section.id),
     )
-    expect(sectionIds).toEqual(['danisma-merkezimiz', 'ben-kimim', 'makaleler', 'iletisim'])
+    // Menüdeki bölümler menü sırasıyla gelir (aralarında SSS gibi ek bölümler olabilir).
+    expect(sectionIds.filter((id) => menuSections.includes(id))).toEqual(menuSections)
 
     const cards = page.locator('#makaleler article')
     expect(await cards.count()).toBeLessThanOrEqual(3)
@@ -96,6 +98,28 @@ test.describe('İletişim formu', () => {
       where: { email: { equals: TEST_EMAIL } },
     })
     expect(saved.totalDocs).toBeGreaterThan(0)
+  })
+})
+
+test.describe('Hizmetler', () => {
+  test('hizmet listesinden hizmet sayfasına gidilir ve yapılandırılmış veri bulunur', async ({ page }) => {
+    await page.goto('/hizmetler')
+    const firstCard = page.locator('main article h3 a').first()
+    test.skip((await firstCard.count()) === 0, 'Yayınlanmış hizmet yok')
+
+    const title = await firstCard.innerText()
+    await firstCard.click()
+    await expect(page).toHaveURL(/\/hizmetler\/.+/, { timeout: 15_000 })
+    await expect(page.locator('h1')).toHaveText(title)
+
+    const schemaTypes = await page.locator('script[type="application/ld+json"]').evaluateAll((scripts) =>
+      scripts.flatMap((script) => {
+        const data = JSON.parse(script.textContent ?? '{}')
+        return (Array.isArray(data) ? data : [data]).map((item) => item['@type'])
+      }),
+    )
+    expect(schemaTypes).toContain('Service')
+    expect(schemaTypes).toContain('MedicalBusiness')
   })
 })
 

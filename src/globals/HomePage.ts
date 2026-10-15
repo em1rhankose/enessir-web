@@ -1,6 +1,8 @@
 import type { GlobalConfig } from 'payload'
 
 import { anyone, authenticated } from '@/access'
+import { faqField } from '@/fields/faq'
+import { seoField } from '@/fields/seo'
 import { revalidateGlobalAfterChange } from '@/hooks/revalidateSite'
 
 export const HomePage: GlobalConfig = {
@@ -80,5 +82,22 @@ export const HomePage: GlobalConfig = {
         },
       ],
     },
+    {
+      type: 'collapsible',
+      label: 'Sıkça sorulan sorular',
+      admin: {
+        description: 'Ana sayfada iletişim bölümünün üstünde görünür. Boş bırakılırsa bölüm gizlenir.',
+      },
+      fields: [
+        {
+          name: 'faqHeading',
+          label: 'Bölüm başlığı',
+          type: 'text',
+          defaultValue: 'Sıkça Sorulan Sorular',
+        },
+        faqField(),
+      ],
+    },
+    seoField(),
   ],
 }

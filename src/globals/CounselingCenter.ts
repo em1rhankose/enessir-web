@@ -1,6 +1,7 @@
 import type { GlobalConfig } from 'payload'
 
 import { anyone, authenticated } from '@/access'
+import { seoField } from '@/fields/seo'
 import { revalidateGlobalAfterChange } from '@/hooks/revalidateSite'
 
 export const CounselingCenter: GlobalConfig = {
@@ -41,9 +42,12 @@ export const CounselingCenter: GlobalConfig = {
       },
     },
     {
+      // ESKİ: Hizmetler artık ayrı "Hizmetler" koleksiyonunda (kendi sayfalarıyla). Bu alan kullanılmıyor;
+      // SQLite'ta alan silmek veritabanı güncellemesinde onay istediği için PostgreSQL geçişinde kaldırılacak.
       name: 'services',
-      label: 'Hizmetler',
+      label: 'Hizmetler (eski)',
       type: 'array',
+      admin: { hidden: true },
       labels: { singular: 'Hizmet', plural: 'Hizmetler' },
       fields: [
         { name: 'title', label: 'Hizmet adı', type: 'text', required: true },
@@ -57,5 +61,6 @@ export const CounselingCenter: GlobalConfig = {
       relationTo: 'media',
       hasMany: true,
     },
+    seoField(),
   ],
 }

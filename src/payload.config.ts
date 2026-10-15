@@ -9,6 +9,7 @@ import sharp from 'sharp'
 import { Articles } from './collections/Articles'
 import { ContactMessages } from './collections/ContactMessages'
 import { Media } from './collections/Media'
+import { Services } from './collections/Services'
 import { Users } from './collections/Users'
 import { getEmailAdapter } from './email'
 import { About } from './globals/About'
@@ -34,7 +35,7 @@ export default buildConfig({
     supportedLanguages: { tr },
     fallbackLanguage: 'tr',
   },
-  collections: [Articles, Media, ContactMessages, Users],
+  collections: [Services, Articles, Media, ContactMessages, Users],
   globals: [HomePage, CounselingCenter, About, SiteSettings],
   editor: lexicalEditor(),
   email: getEmailAdapter(),
@@ -46,6 +47,9 @@ export default buildConfig({
     client: {
       url: process.env.DATABASE_URL || '',
     },
+    // Geliştirmede şema değişikliklerini dev sunucusu uygular. Aynı anda çalışan betikler
+    // (PAYLOAD_DB_PUSH=false ile) şemaya dokunmaz; iki işlem aynı değişikliği uygulamaya çalışıp çakışmaz.
+    push: process.env.PAYLOAD_DB_PUSH !== 'false',
   }),
   sharp,
   plugins: [],

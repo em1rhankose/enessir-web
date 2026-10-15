@@ -1,9 +1,12 @@
+import type { Metadata } from 'next'
 import Link from 'next/link'
 
 import { ArticleCard } from '@/components/ArticleCard'
 import { ContactSection } from '@/components/ContactSection'
+import { FaqList } from '@/components/FaqList'
 import { Hero } from '@/components/home/Hero'
 import { ArrowRightIcon, LeafIcon } from '@/components/Icons'
+import { JsonLd } from '@/components/JsonLd'
 import { getFramedCrop, MediaFrame } from '@/components/MediaFrame'
 import { Reveal } from '@/components/Reveal'
 import { SectionHeading } from '@/components/SectionHeading'
@@ -12,17 +15,32 @@ import {
   getCounselingCenter,
   getHomePage,
   getLatestArticles,
+  getServices,
   getSiteSettings,
 } from '@/lib/queries'
+import { buildPageMetadata } from '@/lib/seo'
+import { faqSchema } from '@/lib/structuredData'
 import { getImage, isMedia } from '@/utilities/media'
 
+export async function generateMetadata(): Promise<Metadata> {
+  const [home, settings] = await Promise.all([getHomePage(), getSiteSettings()])
+  return buildPageMetadata({
+    seo: home.seo,
+    title: settings.siteName,
+    description: settings.seoDescription,
+    path: '/',
+    absoluteTitle: true,
+  })
+}
+
 export default async function HomePage() {
-  const [home, center, about, articles, settings] = await Promise.all([
+  const [home, center, about, articles, settings, services] = await Promise.all([
     getHomePage(),
     getCounselingCenter(),
     getAbout(),
     getLatestArticles(3),
     getSiteSettings(),
+    getServices(),
   ])
 
   const heroImage = getImage(home.heroImage, 'hero')
@@ -47,14 +65,18 @@ export default async function HomePage() {
           <Reveal>
             <SectionHeading eyebrow="Danışma Merkezimiz" title={center.title} description={center.summary} />
 
-            {center.services && center.services.length > 0 && (
+            {services.length > 0 && (
               <ul className="mt-10 grid gap-4 sm:grid-cols-2">
-                {center.services.slice(0, 4).map((service) => (
-                  <li key={service.id ?? service.title} className="flex gap-3">
-                    <span className="mt-0.5 flex size-8 shrink-0 items-center justify-center rounded-full bg-sage-100 text-sage-600">
-                      <LeafIcon className="size-4" />
-                    </span>
-                    <span className="pt-1 font-medium text-ink">{service.title}</span>
+                {services.slice(0, 6).map((service) => (
+                  <li key={service.id}>
+                    <Link href={`/hizmetler/${service.slug}`} className="group flex gap-3">
+                      <span className="mt-0.5 flex size-8 shrink-0 items-center justify-center rounded-full bg-sage-100 text-sage-600 transition-colors group-hover:bg-sage-600 group-hover:text-white">
+                        <LeafIcon className="size-4" />
+                      </span>
+                      <span className="pt-1 font-medium text-ink underline-offset-4 group-hover:underline">
+                        {service.title}
+                      </span>
+                    </Link>
                   </li>
                 ))}
               </ul>
@@ -144,6 +166,24 @@ export default async function HomePage() {
           )}
         </div>
       </section>
+
+      {/* Sıkça Sorulan Sorular: makalelerin devamında, aynı zemin üzerinde */}
+      {home.faqs && home.faqs.length > 0 && (
+        <section id="sss" aria-labelledby="sss-baslik" className="pb-24 md:pb-32">
+          <JsonLd data={faqSchema(home.faqs)} />
+          <div className="container-page grid gap-10 lg:grid-cols-[4fr_7fr] lg:gap-20">
+            <Reveal>
+              <p className="eyebrow">Merak Edilenler</p>
+              <h2 id="sss-baslik" className="mt-3 text-3xl leading-tight text-ink md:text-5xl">
+                {home.faqHeading || 'Sıkça Sorulan Sorular'}
+              </h2>
+            </Reveal>
+            <Reveal delay={0.1}>
+              <FaqList faqs={home.faqs} />
+            </Reveal>
+          </div>
+        </section>
+      )}
 
       {/* İletişim */}
       <section id="iletisim" className="bg-sand py-24 md:py-32">

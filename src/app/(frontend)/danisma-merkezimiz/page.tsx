@@ -1,23 +1,29 @@
 import type { Metadata } from 'next'
+import Link from 'next/link'
 
-import { LeafIcon } from '@/components/Icons'
+import { ArrowRightIcon } from '@/components/Icons'
 import { MediaFrame } from '@/components/MediaFrame'
 import { PageHeader } from '@/components/PageHeader'
 import { Reveal } from '@/components/Reveal'
 import { RichText } from '@/components/RichText'
-import { getCounselingCenter } from '@/lib/queries'
+import { ServiceCard } from '@/components/ServiceCard'
+import { getCounselingCenter, getServices } from '@/lib/queries'
+import { buildPageMetadata } from '@/lib/seo'
 import { isMedia } from '@/utilities/media'
 
 export async function generateMetadata(): Promise<Metadata> {
   const center = await getCounselingCenter()
-  return {
+  return buildPageMetadata({
+    seo: center.seo,
     title: 'Danışma Merkezimiz',
-    description: center.summary ?? undefined,
-  }
+    description: center.summary,
+    image: center.gallery?.[0],
+    path: '/danisma-merkezimiz',
+  })
 }
 
 export default async function CounselingCenterPage() {
-  const center = await getCounselingCenter()
+  const [center, services] = await Promise.all([getCounselingCenter(), getServices()])
   const gallery = (center.gallery ?? []).filter(isMedia)
 
   return (
@@ -32,25 +38,26 @@ export default async function CounselingCenterPage() {
         </section>
       )}
 
-      {center.services && center.services.length > 0 && (
+      {services.length > 0 && (
         <section className="bg-sand py-20 md:py-24">
           <div className="container-page">
-            <Reveal>
-              <p className="eyebrow">Hizmetler</p>
-              <h2 className="mt-3 text-3xl text-ink md:text-4xl">Size nasıl yardımcı olabiliriz?</h2>
+            <Reveal className="flex flex-col justify-between gap-6 md:flex-row md:items-end">
+              <div>
+                <p className="eyebrow">Hizmetler</p>
+                <h2 className="mt-3 text-3xl text-ink md:text-4xl">Size nasıl yardımcı olabiliriz?</h2>
+              </div>
+              <Link
+                href="/hizmetler"
+                className="inline-flex shrink-0 items-center gap-2 font-semibold text-sage-600 hover:text-sage-800"
+              >
+                Tüm hizmetler
+                <ArrowRightIcon className="size-4" />
+              </Link>
             </Reveal>
-            <div role="list" className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-              {center.services.map((service, index) => (
-                <Reveal key={service.id ?? service.title} delay={(index % 3) * 0.1} className="h-full">
-                  <div role="listitem" className="h-full rounded-3xl bg-white p-7 ring-1 ring-line">
-                    <span className="flex size-11 items-center justify-center rounded-full bg-sage-100 text-sage-600">
-                      <LeafIcon className="size-5" />
-                    </span>
-                    <h3 className="mt-5 text-xl text-ink">{service.title}</h3>
-                    {service.description && (
-                      <p className="mt-3 leading-relaxed text-muted">{service.description}</p>
-                    )}
-                  </div>
+            <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+              {services.map((service, index) => (
+                <Reveal key={service.id} delay={(index % 3) * 0.1} className="h-full">
+                  <ServiceCard service={service} />
                 </Reveal>
               ))}
             </div>
