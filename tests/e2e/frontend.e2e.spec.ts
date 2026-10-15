@@ -36,7 +36,8 @@ test.describe('Ana sayfa', () => {
     const title = await firstCard.locator('h3').innerText()
     await firstCard.locator('h3 a').click()
 
-    await expect(page).toHaveURL(/\/makaleler\/.+/)
+    // Geliştirme sunucusu sayfayı ilk ziyarette derlediği için geçiş birkaç saniye sürebilir.
+    await expect(page).toHaveURL(/\/makaleler\/.+/, { timeout: 15_000 })
     await expect(page.locator('h1')).toHaveText(title)
   })
 })
@@ -58,7 +59,7 @@ test.describe('WhatsApp butonu', () => {
     const firstArticle = page.locator('main article h3 a').first()
     if ((await firstArticle.count()) > 0) {
       await firstArticle.click()
-      await expect(page).toHaveURL(/\/makaleler\/.+/)
+      await expect(page).toHaveURL(/\/makaleler\/.+/, { timeout: 15_000 })
       await expect(page.locator(button)).toHaveCount(0)
     }
   })
