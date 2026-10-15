@@ -79,7 +79,7 @@ test.describe('İletişim formu', () => {
 
     await expect(page.getByText('Lütfen adınızı ve soyadınızı yazın.')).toBeVisible()
     await expect(page.getByText('Lütfen geçerli bir e-posta adresi yazın.')).toBeVisible()
-    await expect(page.getByText('Devam etmek için aydınlatma metnini onaylamanız gerekiyor.')).toBeVisible()
+    await expect(page.getByText('Lütfen Aydınlatma Metni’ni okuduğunuzu işaretleyin.')).toBeVisible()
   })
 
   test('geçerli form gönderilir ve mesaj kaydedilir', async ({ page }) => {

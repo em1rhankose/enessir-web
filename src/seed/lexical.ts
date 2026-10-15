@@ -14,12 +14,22 @@ const text = (value: string, format = 0) => ({
   version: 1,
 })
 
-export const paragraph = (value: string) => ({
+/** Düz metin ya da kalın yazılacak parça: ['Amaç: ', { bold: 'Randevu' }] */
+type Inline = string | { bold: string }
+
+const BOLD = 1
+
+const inlines = (value: Inline | Inline[]) =>
+  (Array.isArray(value) ? value : [value]).map((part) =>
+    typeof part === 'string' ? text(part) : text(part.bold, BOLD),
+  )
+
+export const paragraph = (value: Inline | Inline[]) => ({
   ...base,
   type: 'paragraph',
   textFormat: 0,
   textStyle: '',
-  children: [text(value)],
+  children: inlines(value),
 })
 
 export const heading = (value: string, tag: 'h2' | 'h3' = 'h2') => ({
@@ -35,7 +45,7 @@ export const quote = (value: string) => ({
   children: [text(value)],
 })
 
-export const bulletList = (items: string[]) => ({
+export const bulletList = (items: (Inline | Inline[])[]) => ({
   ...base,
   type: 'list',
   listType: 'bullet',
@@ -45,7 +55,7 @@ export const bulletList = (items: string[]) => ({
     ...base,
     type: 'listitem',
     value: index + 1,
-    children: [text(item)],
+    children: inlines(item),
   })),
 })
 

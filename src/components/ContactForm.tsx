@@ -104,9 +104,13 @@ export const ContactForm = () => {
           required
           defaultValue={values.message}
           aria-invalid={Boolean(errors.message)}
-          aria-describedby={errors.message ? 'contact-message-error' : undefined}
+          aria-describedby={`contact-message-hint${errors.message ? ' contact-message-error' : ''}`}
           className={`${inputClass} resize-y`}
         />
+        {/* KVKK: sağlık verisi özel nitelikli veridir; form yoluyla toplanmaması için ziyaretçi uyarılır. */}
+        <p id="contact-message-hint" className="mt-1.5 text-xs leading-relaxed text-muted">
+          Lütfen sağlık durumunuzla ilgili ayrıntıları burada paylaşmayın; bunları görüşmede konuşacağız.
+        </p>
         <FieldError id="contact-message-error" message={errors.message} />
       </div>
 
@@ -126,12 +130,13 @@ export const ContactForm = () => {
             aria-describedby={errors.kvkk ? 'contact-kvkk-error' : undefined}
             className="mt-1 size-4 shrink-0 accent-sage-600"
           />
+          {/* Aydınlatma tek taraflı bilgilendirmedir; "kabul/onay" değil "okudum" beyanı alınır (açık rıza ile karıştırılmaz). */}
           <span>
-            Kişisel verilerimin{' '}
+            Kişisel verilerimin işlenmesine ilişkin{' '}
             <Link href="/kvkk" target="_blank" className="font-medium text-sage-700 underline underline-offset-2">
-              KVKK Aydınlatma Metni
-            </Link>{' '}
-            kapsamında işlenmesini kabul ediyorum.
+              Aydınlatma Metni
+            </Link>
+            ’ni okudum.
           </span>
         </label>
         <FieldError id="contact-kvkk-error" message={errors.kvkk} />

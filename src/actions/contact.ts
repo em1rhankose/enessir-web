@@ -56,7 +56,7 @@ export async function submitContactForm(
   if (values.phone && !PHONE_PATTERN.test(values.phone)) errors.phone = 'Lütfen geçerli bir telefon numarası yazın.'
   if (values.message.length < 10) errors.message = 'Mesajınız en az 10 karakter olmalı.'
   if (values.message.length > 3000) errors.message = 'Mesajınız en fazla 3000 karakter olabilir.'
-  if (formData.get('kvkk') !== 'on') errors.kvkk = 'Devam etmek için aydınlatma metnini onaylamanız gerekiyor.'
+  if (formData.get('kvkk') !== 'on') errors.kvkk = 'Lütfen Aydınlatma Metni’ni okuduğunuzu işaretleyin.'
 
   if (Object.keys(errors).length > 0) {
     return { status: 'error', message: 'Lütfen işaretli alanları kontrol edin.', errors, values }

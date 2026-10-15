@@ -9,6 +9,7 @@ import { getPayload } from 'payload'
 
 import config from '../payload.config'
 import { generateImage, palettes } from './images'
+import { buildKvkkText } from './kvkk'
 import { bulletList, heading, paragraph, quote, richText } from './lexical'
 import { sampleHomeFaqs, sampleServices } from './services'
 
@@ -68,21 +69,14 @@ const seed = async () => {
         { platform: 'instagram', url: 'https://instagram.com' },
         { platform: 'linkedin', url: 'https://linkedin.com' },
       ],
-      kvkkText: richText(
-        paragraph(
-          'Bu metin örnek amaçlıdır ve bir hukukçu tarafından hazırlanmış gerçek aydınlatma metniyle değiştirilmelidir.',
-        ),
-        heading('Veri sorumlusu'),
-        paragraph('Kişisel verileriniz, veri sorumlusu sıfatıyla Psikolog Enes Sir tarafından işlenmektedir.'),
-        heading('İşlenen veriler ve amaç'),
-        paragraph(
-          'İletişim formu aracılığıyla paylaştığınız ad soyad, e-posta, telefon ve mesaj bilgileriniz yalnızca talebinize yanıt verilmesi amacıyla işlenir.',
-        ),
-        heading('Haklarınız'),
-        paragraph(
-          '6698 sayılı Kanun’un 11. maddesi kapsamındaki haklarınızı kullanmak için bizimle iletişime geçebilirsiniz.',
-        ),
-      ),
+      kvkkText: buildKvkkText({
+        fullName: 'Enes Sir',
+        title: 'Psikolog',
+        address: 'Örnek Mahallesi, Örnek Sokak No: 1, Kadıköy / İstanbul',
+        email: 'iletisim@ornek.com',
+        phone: '+90 500 000 00 00',
+        date: new Intl.DateTimeFormat('tr-TR', { day: 'numeric', month: 'long', year: 'numeric' }).format(new Date()),
+      }),
     },
   })
 

@@ -56,7 +56,7 @@ export const ContactMessages: CollectionConfig = {
     },
     {
       name: 'kvkkConsent',
-      label: 'KVKK aydınlatma metnini onayladı',
+      label: 'Aydınlatma metnini okuduğunu belirtti',
       type: 'checkbox',
       required: true,
       admin: {
