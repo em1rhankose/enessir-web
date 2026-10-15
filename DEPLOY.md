@@ -124,6 +124,9 @@ cd /opt/enessir
 git pull
 docker compose -f docker-compose.prod.yml build app
 docker compose -f docker-compose.prod.yml up -d
+# Her derleme ~260 MB'lık yeni bir imaj oluşturur; kullanılmayan eski imajları ve derleme önbelleğini sil.
+docker image prune -f
+docker builder prune -f --filter until=168h
 ```
 
 Veritabanında yapı değişikliği varsa (yeni migration) site açılırken otomatik uygulanır. Geçiş sırasında site birkaç saniye kesintiye uğrar.
