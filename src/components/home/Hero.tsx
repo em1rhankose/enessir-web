@@ -78,10 +78,10 @@ export const Hero = ({ title, subtitle, buttonText, image, portrait }: HeroProps
             {buttonText || 'Randevu Al'}
           </Link>
           <Link
-            href="#danisma-merkezimiz"
+            href="#ben-kimim"
             className="inline-flex items-center rounded-full border border-white/60 px-6 py-3 font-semibold transition-colors hover:bg-white hover:text-ink"
           >
-            Bizi Tanıyın
+            Beni Tanıyın
           </Link>
         </motion.div>
       </div>
