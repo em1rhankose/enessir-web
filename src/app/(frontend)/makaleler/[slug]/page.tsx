@@ -1,15 +1,15 @@
 import type { Metadata } from 'next'
-import Image from 'next/image'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 
 import { ArticleCard } from '@/components/ArticleCard'
 import { ArrowLeftIcon } from '@/components/Icons'
+import { getMediaCrop, MediaFrame } from '@/components/MediaFrame'
 import { Reveal } from '@/components/Reveal'
 import { RichText } from '@/components/RichText'
 import { getAllArticleSlugs, getArticleBySlug, getLatestArticles } from '@/lib/queries'
 import { formatDate, getReadingMinutes } from '@/utilities/format'
-import { getImage } from '@/utilities/media'
+import { getImage, isMedia } from '@/utilities/media'
 
 /** Yayınlanmış makalelerin sayfaları build sırasında önceden üretilir; yenileri ilk ziyarette üretilir. */
 export async function generateStaticParams() {
@@ -44,7 +44,6 @@ export default async function ArticlePage({ params }: PageProps<'/makaleler/[slu
 
   if (!article) notFound()
 
-  const cover = getImage(article.coverImage, 'hero')
   const otherArticles = (await getLatestArticles(4)).filter((item) => item.id !== article.id).slice(0, 3)
 
   return (
@@ -70,19 +69,28 @@ export default async function ArticlePage({ params }: PageProps<'/makaleler/[slu
         </div>
       </header>
 
-      {cover && (
+      {isMedia(article.coverImage) && (
         <div className="bg-gradient-to-b from-sand from-50% to-cream to-50%">
           <div className="container-page max-w-5xl">
-            <div className="relative aspect-[16/9] overflow-hidden rounded-[2rem] bg-sage-100">
-              <Image
-                src={cover.src}
-                alt={cover.alt}
-                fill
+            {getMediaCrop(article.coverImage) ? (
+              // Kare/yuvarlak seçildiyse şekil kapak alanının ortasında gösterilir.
+              <div className="flex aspect-[16/9] items-center justify-center rounded-[2rem] bg-sage-100 p-6 md:p-10">
+                <MediaFrame
+                  media={article.coverImage}
+                  priority
+                  sizes="(min-width: 1024px) 28rem, 60vw"
+                  shapedClassName="h-full w-auto"
+                />
+              </div>
+            ) : (
+              <MediaFrame
+                media={article.coverImage}
+                size="hero"
                 priority
                 sizes="(min-width: 1024px) 64rem, 100vw"
-                className="object-cover"
+                className="aspect-[16/9] rounded-[2rem] bg-sage-100"
               />
-            </div>
+            )}
           </div>
         </div>
       )}

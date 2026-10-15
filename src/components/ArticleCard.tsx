@@ -1,24 +1,31 @@
-import Image from 'next/image'
 import Link from 'next/link'
 
 import { ArrowRightIcon } from '@/components/Icons'
+import { getMediaCrop, MediaFrame } from '@/components/MediaFrame'
 import type { Article } from '@/payload-types'
 import { formatDate, getReadingMinutes } from '@/utilities/format'
-import { getImage } from '@/utilities/media'
 
 export const ArticleCard = ({ article }: { article: Article }) => {
-  const image = getImage(article.coverImage, 'card')
-
   return (
     <article className="group relative flex h-full flex-col overflow-hidden rounded-3xl bg-white shadow-[0_1px_2px_rgba(36,48,45,0.06)] ring-1 ring-line transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_18px_40px_-18px_rgba(36,48,45,0.28)]">
       <div className="relative aspect-[4/3] overflow-hidden bg-sage-100">
-        {image && (
-          <Image
-            src={image.src}
-            alt={image.alt}
-            fill
+        {getMediaCrop(article.coverImage) ? (
+          // Kare/yuvarlak seçildiyse şekil, kart boyları bozulmasın diye görsel alanının ortasında durur.
+          <div className="flex h-full items-center justify-center p-5">
+            <MediaFrame
+              media={article.coverImage}
+              sizes="(min-width: 1024px) 20vw, (min-width: 640px) 35vw, 70vw"
+              shapedClassName="h-full w-auto"
+              imageClassName="transition-transform duration-700 group-hover:scale-105"
+            />
+          </div>
+        ) : (
+          <MediaFrame
+            media={article.coverImage}
+            size="card"
             sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
-            className="object-cover transition-transform duration-700 group-hover:scale-105"
+            className="absolute inset-0"
+            imageClassName="transition-transform duration-700 group-hover:scale-105"
           />
         )}
       </div>

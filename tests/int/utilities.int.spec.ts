@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest'
 
 import { buildMapEmbedUrl, buildWhatsAppUrl, isWhatsAppHidden } from '@/lib/navigation'
+import { getCropStyle, parseCrop, scaleSizes } from '@/utilities/crop'
 import { getReadingMinutes } from '@/utilities/format'
 import { formatSlug } from '@/utilities/formatSlug'
 
@@ -43,6 +44,42 @@ describe('WhatsApp', () => {
 describe('buildMapEmbedUrl', () => {
   it('adresi URL içinde güvenli şekilde kodlar', () => {
     expect(buildMapEmbedUrl('Kadıköy, İstanbul')).toContain('q=Kad%C4%B1k%C3%B6y%2C%20%C4%B0stanbul')
+  })
+})
+
+describe('görsel kırpma', () => {
+  it('geçerli kare/yuvarlak seçimi kabul eder', () => {
+    expect(parseCrop({ shape: 'circle', x: 10, y: 20, width: 50, height: 40 })).toEqual({
+      shape: 'circle',
+      x: 10,
+      y: 20,
+      width: 50,
+      height: 40,
+    })
+  })
+
+  it('"olduğu gibi" ve bozuk değerleri reddeder (görsel olduğu gibi gösterilir)', () => {
+    expect(parseCrop(null)).toBeNull()
+    expect(parseCrop({ shape: 'original' })).toBeNull()
+    expect(parseCrop({ shape: 'square' })).toBeNull()
+    expect(parseCrop({ shape: 'square', x: -5, y: 0, width: 50, height: 50 })).toBeNull()
+    expect(parseCrop({ shape: 'triangle', x: 0, y: 0, width: 50, height: 50 })).toBeNull()
+  })
+
+  it('seçilen alanı çerçeveyi dolduracak şekilde büyütüp kaydırır', () => {
+    // Görselin sağ alt çeyreği seçildi: görsel 2 kat büyür ve yarısı kadar sola/yukarı kayar.
+    expect(getCropStyle({ shape: 'square', x: 50, y: 50, width: 50, height: 50 })).toMatchObject({
+      left: '-100%',
+      top: '-100%',
+      width: '200%',
+      height: '200%',
+    })
+  })
+
+  it('tarayıcıya büyütme oranında daha büyük görsel indirmesini söyler', () => {
+    expect(scaleSizes('(min-width: 1024px) 32rem, 80vw', 2)).toBe(
+      '(min-width: 1024px) calc(32rem * 2.00), calc(80vw * 2.00)',
+    )
   })
 })
 

@@ -1,10 +1,10 @@
-import Image from 'next/image'
 import Link from 'next/link'
 
 import { ArticleCard } from '@/components/ArticleCard'
 import { ContactSection } from '@/components/ContactSection'
 import { Hero } from '@/components/home/Hero'
 import { ArrowRightIcon, LeafIcon } from '@/components/Icons'
+import { getMediaCrop, MediaFrame } from '@/components/MediaFrame'
 import { Reveal } from '@/components/Reveal'
 import { SectionHeading } from '@/components/SectionHeading'
 import {
@@ -14,7 +14,7 @@ import {
   getLatestArticles,
   getSiteSettings,
 } from '@/lib/queries'
-import { getImage } from '@/utilities/media'
+import { getImage, isMedia } from '@/utilities/media'
 
 export default async function HomePage() {
   const [home, center, about, articles, settings] = await Promise.all([
@@ -26,10 +26,10 @@ export default async function HomePage() {
   ])
 
   const heroImage = getImage(home.heroImage, 'hero')
-  // Portre şeffaf PNG olduğu için orijinal dosya kullanılır; Next.js zaten ekrana uygun boyutu üretir.
-  const heroPortrait = getImage(home.heroPortrait)
-  const centerImage = getImage(center.gallery?.[0], 'card')
-  const aboutPhoto = getImage(about.photo, 'card')
+  const heroPortrait = isMedia(home.heroPortrait) ? home.heroPortrait : null
+  // Danışma Merkezimiz galerisinin ilk fotoğrafı ana sayfada da kullanılır.
+  const centerMedia = center.gallery?.[0]
+  const centerCrop = getMediaCrop(centerMedia)
 
   return (
     <>
@@ -68,22 +68,23 @@ export default async function HomePage() {
 
           <Reveal delay={0.15}>
             <div className="relative">
-              <div aria-hidden="true" className="absolute -inset-4 -z-10 rotate-2 rounded-[2.5rem] bg-sage-100" />
-              <div className="relative aspect-[4/5] overflow-hidden rounded-[2rem] bg-sage-200">
-                {centerImage ? (
-                  <Image
-                    src={centerImage.src}
-                    alt={centerImage.alt}
-                    fill
-                    sizes="(min-width: 1024px) 45vw, 100vw"
-                    className="object-cover"
-                  />
-                ) : (
+              <div
+                aria-hidden="true"
+                className={`absolute -inset-4 -z-10 rotate-2 bg-sage-100 ${
+                  centerCrop?.shape === 'circle' ? 'rounded-full' : 'rounded-[2.5rem]'
+                }`}
+              />
+              <MediaFrame
+                media={centerMedia}
+                size="card"
+                sizes="(min-width: 1024px) 45vw, 100vw"
+                className="aspect-[4/5] rounded-[2rem] bg-sage-200"
+                fallback={
                   <div className="flex size-full items-center justify-center text-sage-500">
                     <LeafIcon className="size-16" />
                   </div>
-                )}
-              </div>
+                }
+              />
             </div>
           </Reveal>
         </div>
@@ -93,17 +94,13 @@ export default async function HomePage() {
       <section id="ben-kimim" className="bg-sand py-24 md:py-32">
         <div className="container-page grid items-center gap-14 lg:grid-cols-[5fr_7fr] lg:gap-20">
           <Reveal className="order-last lg:order-first">
-            <div className="relative mx-auto aspect-[3/4] max-w-sm overflow-hidden rounded-t-full rounded-b-[2rem] bg-sage-200 lg:max-w-none">
-              {aboutPhoto && (
-                <Image
-                  src={aboutPhoto.src}
-                  alt={aboutPhoto.alt}
-                  fill
-                  sizes="(min-width: 1024px) 40vw, 100vw"
-                  className="object-cover"
-                />
-              )}
-            </div>
+            <MediaFrame
+              media={about.photo}
+              size="card"
+              sizes="(min-width: 1024px) 40vw, 100vw"
+              className="mx-auto aspect-[3/4] max-w-sm rounded-t-full rounded-b-[2rem] bg-sage-200 lg:max-w-none"
+              shapedClassName="mx-auto w-full max-w-sm lg:max-w-none"
+            />
           </Reveal>
 
           <Reveal delay={0.15}>

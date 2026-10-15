@@ -1,12 +1,11 @@
 import type { Metadata } from 'next'
-import Image from 'next/image'
 import Link from 'next/link'
 
+import { MediaFrame } from '@/components/MediaFrame'
 import { PageHeader } from '@/components/PageHeader'
 import { Reveal } from '@/components/Reveal'
 import { RichText } from '@/components/RichText'
 import { getAbout } from '@/lib/queries'
-import { getImage } from '@/utilities/media'
 
 export async function generateMetadata(): Promise<Metadata> {
   const about = await getAbout()
@@ -18,7 +17,6 @@ export async function generateMetadata(): Promise<Metadata> {
 
 export default async function AboutPage() {
   const about = await getAbout()
-  const photo = getImage(about.photo, 'card')
 
   return (
     <>
@@ -28,18 +26,13 @@ export default async function AboutPage() {
         <div className="container-page grid gap-14 lg:grid-cols-[4fr_7fr] lg:gap-20">
           <Reveal>
             <div className="lg:sticky lg:top-28">
-              <div className="relative aspect-[3/4] overflow-hidden rounded-t-full rounded-b-[2rem] bg-sage-200">
-                {photo && (
-                  <Image
-                    src={photo.src}
-                    alt={photo.alt}
-                    fill
-                    priority
-                    sizes="(min-width: 1024px) 35vw, 100vw"
-                    className="object-cover"
-                  />
-                )}
-              </div>
+              <MediaFrame
+                media={about.photo}
+                size="card"
+                priority
+                sizes="(min-width: 1024px) 35vw, 100vw"
+                className="aspect-[3/4] rounded-t-full rounded-b-[2rem] bg-sage-200"
+              />
               <Link href="/iletisim" className="btn-primary mt-8 w-full">
                 Randevu Al
               </Link>

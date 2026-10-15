@@ -1,12 +1,12 @@
 import type { Metadata } from 'next'
-import Image from 'next/image'
 
 import { LeafIcon } from '@/components/Icons'
+import { MediaFrame } from '@/components/MediaFrame'
 import { PageHeader } from '@/components/PageHeader'
 import { Reveal } from '@/components/Reveal'
 import { RichText } from '@/components/RichText'
 import { getCounselingCenter } from '@/lib/queries'
-import { getImage } from '@/utilities/media'
+import { isMedia } from '@/utilities/media'
 
 export async function generateMetadata(): Promise<Metadata> {
   const center = await getCounselingCenter()
@@ -18,7 +18,7 @@ export async function generateMetadata(): Promise<Metadata> {
 
 export default async function CounselingCenterPage() {
   const center = await getCounselingCenter()
-  const gallery = (center.gallery ?? []).map((media) => getImage(media, 'card')).filter((image) => image !== null)
+  const gallery = (center.gallery ?? []).filter(isMedia)
 
   return (
     <>
@@ -60,18 +60,15 @@ export default async function CounselingCenterPage() {
 
       {gallery.length > 0 && (
         <section className="py-20 md:py-24">
-          <div className="container-page grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {gallery.map((image, index) => (
-              <Reveal key={image.src} delay={(index % 3) * 0.1}>
-                <div className="relative aspect-[4/3] overflow-hidden rounded-3xl bg-sage-100">
-                  <Image
-                    src={image.src}
-                    alt={image.alt}
-                    fill
-                    sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
-                    className="object-cover"
-                  />
-                </div>
+          <div className="container-page grid items-start gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {gallery.map((media, index) => (
+              <Reveal key={media.id} delay={(index % 3) * 0.1}>
+                <MediaFrame
+                  media={media}
+                  size="card"
+                  sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
+                  className="aspect-[4/3] rounded-3xl bg-sage-100"
+                />
               </Reveal>
             ))}
           </div>

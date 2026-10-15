@@ -34,6 +34,17 @@ export const Media: CollectionConfig = {
         description: 'Görseli kısaca tarif edin. Görme engelli ziyaretçiler ve Google için önemlidir.',
       },
     },
+    {
+      // Şekil (olduğu gibi / kare / yuvarlak) ve seçilen alan; dosyanın kendisini değiştirmez.
+      name: 'crop',
+      label: 'Sitede gösterim',
+      type: 'json',
+      admin: {
+        components: {
+          Field: '@/components/admin/ImageCropField#ImageCropField',
+        },
+      },
+    },
   ],
   upload: {
     mimeTypes: ['image/*'],

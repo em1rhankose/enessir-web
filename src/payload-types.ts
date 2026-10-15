@@ -180,6 +180,15 @@ export interface Media {
    * Görseli kısaca tarif edin. Görme engelli ziyaretçiler ve Google için önemlidir.
    */
   alt: string;
+  crop?:
+    | {
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
   updatedAt: string;
   createdAt: string;
   url?: string | null;
@@ -363,6 +372,7 @@ export interface ArticlesSelect<T extends boolean = true> {
  */
 export interface MediaSelect<T extends boolean = true> {
   alt?: T;
+  crop?: T;
   updatedAt?: T;
   createdAt?: T;
   url?: T;

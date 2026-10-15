@@ -5,6 +5,8 @@ import Image from 'next/image'
 import Link from 'next/link'
 
 import { ChevronDownIcon } from '@/components/Icons'
+import { getMediaCrop, MediaFrame } from '@/components/MediaFrame'
+import type { Media } from '@/payload-types'
 
 type HeroImage = { src: string; alt: string }
 
@@ -13,8 +15,11 @@ type HeroProps = {
   subtitle?: string | null
   buttonText?: string | null
   image?: HeroImage | null
-  /** Arka planı olmayan (şeffaf) PNG portre; verilirse sağda, alt kenara oturmuş şekilde gösterilir. */
-  portrait?: HeroImage | null
+  /**
+   * Portre. "Olduğu gibi" ise (şeffaf PNG) sağda alt kenara oturur;
+   * admin panelde kare/yuvarlak seçildiyse sağda çerçeve içinde gösterilir.
+   */
+  portrait?: Media | null
 }
 
 const ease = [0.22, 1, 0.36, 1] as const
@@ -81,7 +86,27 @@ export const Hero = ({ title, subtitle, buttonText, image, portrait }: HeroProps
         </motion.div>
       </div>
 
-      {portrait && (
+      {portrait && getMediaCrop(portrait) && (
+        <motion.div
+          initial={{ opacity: 0, scale: 0.94 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 1.1, ease, delay: 0.3 }}
+          className="relative flex items-center justify-center self-center pb-16 lg:pb-0"
+        >
+          <div
+            aria-hidden="true"
+            className="absolute aspect-square w-[90%] max-w-lg rounded-full bg-sage-300/30 blur-3xl"
+          />
+          <MediaFrame
+            media={portrait}
+            priority
+            sizes="(min-width: 1024px) 32rem, 80vw"
+            shapedClassName="relative w-4/5 max-w-md shadow-[0_30px_60px_-20px_rgba(0,0,0,0.45)] ring-4 ring-white/15"
+          />
+        </motion.div>
+      )}
+
+      {portrait?.url && !getMediaCrop(portrait) && (
         <motion.div
           initial={{ opacity: 0, y: 40 }}
           animate={{ opacity: 1, y: 0 }}
@@ -94,7 +119,7 @@ export const Hero = ({ title, subtitle, buttonText, image, portrait }: HeroProps
             className="absolute bottom-0 left-1/2 aspect-square w-[85%] max-w-xl -translate-x-1/2 translate-y-1/4 rounded-full bg-sage-300/35 blur-3xl"
           />
           <Image
-            src={portrait.src}
+            src={portrait.url}
             alt={portrait.alt}
             fill
             priority
