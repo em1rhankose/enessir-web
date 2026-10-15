@@ -2,6 +2,7 @@ import type { CollectionConfig } from 'payload'
 
 import { anyone, authenticated } from '@/access'
 import { revalidateAfterChange, revalidateAfterDelete } from '@/hooks/revalidateSite'
+import { trimTransparentImage } from '@/hooks/trimTransparentImage'
 
 export const Media: CollectionConfig = {
   slug: 'media',
@@ -19,6 +20,7 @@ export const Media: CollectionConfig = {
     delete: authenticated,
   },
   hooks: {
+    beforeOperation: [trimTransparentImage],
     afterChange: [revalidateAfterChange],
     afterDelete: [revalidateAfterDelete],
   },
