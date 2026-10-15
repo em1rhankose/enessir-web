@@ -1,0 +1,18 @@
+# Docker imajına girmeyecek dosyalar (güvenlik ve imaj boyutu için).
+.git
+.next
+node_modules
+media
+backups
+*.db
+.env
+.env.*
+!.env.example
+!.env.production.example
+test-results
+playwright-report
+coverage
+.vscode
+.idea
+README.md
+DEPLOY.md

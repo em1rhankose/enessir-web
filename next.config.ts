@@ -21,6 +21,8 @@ const securityHeaders = [
 ]
 
 const nextConfig: NextConfig = {
+  // Docker imajı için: çalışması gereken dosyalar .next/standalone altında toplanır (küçük imaj, hızlı açılış).
+  output: 'standalone',
   poweredByHeader: false,
   async headers() {
     return [{ source: '/:path*', headers: securityHeaders }]

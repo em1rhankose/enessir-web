@@ -46,6 +46,9 @@ next-env.d.ts
 
 /media
 
+# canlı ortam veritabanı yedekleri
+/backups
+
 # Playwright
 node_modules/
 /test-results/
