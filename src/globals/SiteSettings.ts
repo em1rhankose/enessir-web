@@ -25,6 +25,16 @@ export const SiteSettings: GlobalConfig = {
       defaultValue: 'Psikolog Enes Sir',
     },
     {
+      name: 'allowIndexing',
+      label: 'Site Google ve diğer arama motorlarında görünsün',
+      type: 'checkbox',
+      defaultValue: false,
+      admin: {
+        description:
+          'Kapalıyken site yayındadır ve bağlantıyla açılabilir, ama arama motorları siteyi dizine eklemez. İçerikler hazır olunca açın.',
+      },
+    },
+    {
       name: 'seoDescription',
       label: 'Site açıklaması (SEO)',
       type: 'textarea',

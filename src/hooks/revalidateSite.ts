@@ -22,6 +22,7 @@ const revalidateAll = (req: PayloadRequest) => {
     revalidatePath('/', 'layout')
     // Sayfa düzeninin dışındaki otomatik üretilen dosyalar.
     revalidatePath('/sitemap.xml')
+    revalidatePath('/robots.txt')
     revalidatePath('/llms.txt')
   } catch (error) {
     req.payload.logger.warn({ err: error, msg: 'Site önbelleği temizlenemedi' })

@@ -1,4 +1,4 @@
-import { sqliteAdapter } from '@payloadcms/db-sqlite'
+import { postgresAdapter } from '@payloadcms/db-postgres'
 import { lexicalEditor } from '@payloadcms/richtext-lexical'
 import { tr } from '@payloadcms/translations/languages/tr'
 import path from 'path'
@@ -16,6 +16,7 @@ import { About } from './globals/About'
 import { CounselingCenter } from './globals/CounselingCenter'
 import { HomePage } from './globals/HomePage'
 import { SiteSettings } from './globals/SiteSettings'
+import { migrations } from './migrations'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -43,13 +44,16 @@ export default buildConfig({
   typescript: {
     outputFile: path.resolve(dirname, 'payload-types.ts'),
   },
-  db: sqliteAdapter({
-    client: {
-      url: process.env.DATABASE_URL || '',
+  db: postgresAdapter({
+    pool: {
+      connectionString: process.env.DATABASE_URL || '',
     },
-    // Geliştirmede şema değişikliklerini dev sunucusu uygular. Aynı anda çalışan betikler
-    // (PAYLOAD_DB_PUSH=false ile) şemaya dokunmaz; iki işlem aynı değişikliği uygulamaya çalışıp çakışmaz.
-    push: process.env.PAYLOAD_DB_PUSH !== 'false',
+    // Veritabanı yapısı otomatik değiştirilmez; her değişiklik src/migrations altında bir migration
+    // dosyasıyla yapılır (npm run migrate:create / npm run migrate). Böylece canlıda da aynı adımlar uygulanır.
+    push: false,
+    migrationDir: path.resolve(dirname, 'migrations'),
+    // Canlıda site açılırken uygulanmamış migration'lar otomatik çalıştırılır.
+    prodMigrations: migrations,
   }),
   sharp,
   plugins: [],

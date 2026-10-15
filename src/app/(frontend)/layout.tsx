@@ -36,6 +36,8 @@ export async function generateMetadata(): Promise<Metadata> {
       template: `%s | ${settings.siteName}`,
     },
     description: settings.seoDescription ?? undefined,
+    // Site Ayarları'nda arama motorları kapalıysa her sayfa "dizine ekleme" olarak işaretlenir.
+    robots: settings.allowIndexing ? undefined : { index: false, follow: false },
     openGraph: {
       type: 'website',
       locale: 'tr_TR',

@@ -703,13 +703,6 @@ export interface CounselingCenter {
     };
     [k: string]: unknown;
   } | null;
-  services?:
-    | {
-        title: string;
-        description?: string | null;
-        id?: string | null;
-      }[]
-    | null;
   gallery?: (number | Media)[] | null;
   /**
    * Boş bırakırsanız sayfanın kendi başlığı ve özeti kullanılır.
@@ -797,6 +790,10 @@ export interface About {
 export interface SiteSetting {
   id: number;
   siteName: string;
+  /**
+   * Kapalıyken site yayındadır ve bağlantıyla açılabilir, ama arama motorları siteyi dizine eklemez. İçerikler hazır olunca açın.
+   */
+  allowIndexing?: boolean | null;
   /**
    * Google arama sonuçlarında site adının altında görünen kısa açıklama (en fazla 160 karakter).
    */
@@ -897,13 +894,6 @@ export interface CounselingCenterSelect<T extends boolean = true> {
   title?: T;
   summary?: T;
   content?: T;
-  services?:
-    | T
-    | {
-        title?: T;
-        description?: T;
-        id?: T;
-      };
   gallery?: T;
   seo?:
     | T
@@ -951,6 +941,7 @@ export interface AboutSelect<T extends boolean = true> {
  */
 export interface SiteSettingsSelect<T extends boolean = true> {
   siteName?: T;
+  allowIndexing?: T;
   seoDescription?: T;
   whatsappNumber?: T;
   whatsappMessage?: T;

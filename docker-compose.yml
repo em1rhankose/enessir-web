@@ -1,43 +1,26 @@
-version: '3'
+# Geliştirme ortamı: sadece PostgreSQL. Site bilgisayarda `npm run dev` ile çalışır.
+#   docker compose up -d     -> veritabanını başlatır
+#   docker compose down      -> durdurur (veriler "pgdata" biriminde kalır)
+# Canlı ortam için bkz. docker-compose.prod.yml ve DEPLOY.md
 
 services:
-  payload:
-    image: node:20-alpine
+  db:
+    image: postgres:17-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: enessir
+      POSTGRES_USER: enessir
+      POSTGRES_PASSWORD: enessir_dev
     ports:
-      - '3000:3000'
+      # Sadece bu bilgisayardan erişilebilir. 5433: bilgisayarda kurulu başka bir PostgreSQL (5432) ile çakışmasın.
+      - '127.0.0.1:5433:5432'
     volumes:
-      - .:/home/node/app
-      - node_modules:/home/node/app/node_modules
-    working_dir: /home/node/app/
-    command: sh -c "corepack enable && corepack prepare pnpm@latest --activate && pnpm install && pnpm dev"
-    depends_on:
-      - mongo
-      # - postgres
-    env_file:
-      - .env
-
-  # Ensure your DATABASE_URL uses 'mongo' as the hostname ie. mongodb://mongo/my-db-name
-  mongo:
-    image: mongo:latest
-    ports:
-      - '27017:27017'
-    command:
-      - --storageEngine=wiredTiger
-    volumes:
-      - data:/data/db
-    logging:
-      driver: none
-
-  # Uncomment the following to use postgres
-  # postgres:
-  #   restart: always
-  #   image: postgres:latest
-  #   volumes:
-  #     - pgdata:/var/lib/postgresql/data
-  #   ports:
-  #     - "5432:5432"
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U enessir -d enessir']
+      interval: 5s
+      timeout: 5s
+      retries: 10
 
 volumes:
-  data:
-  # pgdata:
-  node_modules:
+  pgdata:

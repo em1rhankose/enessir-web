@@ -42,19 +42,6 @@ export const CounselingCenter: GlobalConfig = {
       },
     },
     {
-      // ESKİ: Hizmetler artık ayrı "Hizmetler" koleksiyonunda (kendi sayfalarıyla). Bu alan kullanılmıyor;
-      // SQLite'ta alan silmek veritabanı güncellemesinde onay istediği için PostgreSQL geçişinde kaldırılacak.
-      name: 'services',
-      label: 'Hizmetler (eski)',
-      type: 'array',
-      admin: { hidden: true },
-      labels: { singular: 'Hizmet', plural: 'Hizmetler' },
-      fields: [
-        { name: 'title', label: 'Hizmet adı', type: 'text', required: true },
-        { name: 'description', label: 'Açıklama', type: 'textarea' },
-      ],
-    },
-    {
       name: 'gallery',
       label: 'Fotoğraflar',
       type: 'upload',
