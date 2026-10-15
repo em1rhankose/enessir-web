@@ -11,6 +11,8 @@ import 'dotenv/config'
  */
 export default defineConfig({
   testDir: './tests/e2e',
+  // Testler geliştirme sunucusunda çalışır; sayfalar ilk ziyarette derlendiği için bekleme payı geniş tutulur.
+  expect: { timeout: 10_000 },
   /* Fail the build on CI if you accidentally left test.only in the source code. */
   forbidOnly: !!process.env.CI,
   /* Retry on CI only */
