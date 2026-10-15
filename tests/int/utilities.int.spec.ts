@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
 
 import { buildMapEmbedUrl, buildWhatsAppUrl, isWhatsAppHidden } from '@/lib/navigation'
-import { getCropStyle, parseCrop, scaleSizes } from '@/utilities/crop'
+import { getCropAspectRatio, getCropStyle, parseCrop, scaleSizes } from '@/utilities/crop'
 import { getReadingMinutes } from '@/utilities/format'
 import { formatSlug } from '@/utilities/formatSlug'
 
@@ -56,6 +56,13 @@ describe('görsel kırpma', () => {
       width: 50,
       height: 40,
     })
+  })
+
+  it('serbest seçimi kabul eder ve gerçek piksel oranını hesaplar', () => {
+    const crop = parseCrop({ shape: 'free', x: 0, y: 20, width: 100, height: 50 })
+    expect(crop?.shape).toBe('free')
+    // 800x600 görselin tamamı genişlikte, yarısı yükseklikte: 800 / 300
+    expect(getCropAspectRatio(crop!, 800, 600)).toBeCloseTo(800 / 300)
   })
 
   it('"olduğu gibi" ve bozuk değerleri reddeder (görsel olduğu gibi gösterilir)', () => {

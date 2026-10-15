@@ -4,7 +4,7 @@ import { ArticleCard } from '@/components/ArticleCard'
 import { ContactSection } from '@/components/ContactSection'
 import { Hero } from '@/components/home/Hero'
 import { ArrowRightIcon, LeafIcon } from '@/components/Icons'
-import { getMediaCrop, MediaFrame } from '@/components/MediaFrame'
+import { getFramedCrop, MediaFrame } from '@/components/MediaFrame'
 import { Reveal } from '@/components/Reveal'
 import { SectionHeading } from '@/components/SectionHeading'
 import {
@@ -29,7 +29,7 @@ export default async function HomePage() {
   const heroPortrait = isMedia(home.heroPortrait) ? home.heroPortrait : null
   // Danışma Merkezimiz galerisinin ilk fotoğrafı ana sayfada da kullanılır.
   const centerMedia = center.gallery?.[0]
-  const centerCrop = getMediaCrop(centerMedia)
+  const centerCrop = getFramedCrop(centerMedia)
 
   return (
     <>

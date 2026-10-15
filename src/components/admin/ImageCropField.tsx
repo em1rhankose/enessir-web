@@ -6,10 +6,18 @@ import { useEffect, useMemo, useRef, useState, type CSSProperties } from 'react'
 import ReactCrop, { centerCrop, makeAspectCrop, type PercentCrop } from 'react-image-crop'
 import 'react-image-crop/dist/ReactCrop.css'
 
-import { getCropStyle, parseCrop, type CropShape, type ImageCrop } from '@/utilities/crop'
+import {
+  getCropAspectRatio,
+  getCropStyle,
+  isFramedShape,
+  parseCrop,
+  type CropShape,
+  type ImageCrop,
+} from '@/utilities/crop'
 
 const shapes: { value: CropShape; label: string }[] = [
   { value: 'original', label: 'Olduğu gibi' },
+  { value: 'free', label: 'Serbest' },
   { value: 'square', label: 'Kare' },
   { value: 'circle', label: 'Yuvarlak' },
 ]
@@ -22,9 +30,22 @@ const centeredSquare = (width: number, height: number): PercentCrop => {
   return centerCrop(makeAspectCrop(base, 1, width, height), width, height)
 }
 
+const fullImage: PercentCrop = { unit: '%', x: 0, y: 0, width: 100, height: 100 }
+
+/** Seçim piksel cinsinden kare mi? (Yüzdeler görselin en ve boyuna göre olduğu için doğrudan karşılaştırılamaz.) */
+const isSquareSelection = (area: PercentCrop, width: number, height: number) =>
+  Math.abs(area.width * width - area.height * height) <= 0.02 * Math.min(area.width * width, area.height * height)
+
+/** Seçilen şekle uygun alan: serbestte mevcut seçim (yoksa görselin tamamı), kare/yuvarlakta kare bir seçim. */
+const areaForShape = (shape: CropShape, current: PercentCrop | undefined, width: number, height: number) => {
+  if (shape === 'free') return current ?? fullImage
+  if (current && isSquareSelection(current, width, height)) return current
+  return centeredSquare(width, height)
+}
+
 /**
- * Medya kaydında görselin sitede nasıl gösterileceğini seçme aracı:
- * olduğu gibi, ya da istenen alan seçilerek kare / yuvarlak.
+ * Medya kaydında görselin sitede nasıl gösterileceğini seçme aracı: olduğu gibi,
+ * serbest seçilen alan (çerçevesiz) ya da istenen alan seçilerek kare / yuvarlak.
  */
 export const ImageCropField: JSONFieldClientComponent = ({ field, path }) => {
   const { value, setValue } = useField<ImageCrop | { shape: 'original' } | null>({ path })
@@ -39,13 +60,14 @@ export const ImageCropField: JSONFieldClientComponent = ({ field, path }) => {
   const savedUrl = typeof savedDocumentData?.url === 'string' ? savedDocumentData.url : null
   const src = objectUrl ?? savedUrl
 
-  const shape: CropShape = value?.shape === 'square' || value?.shape === 'circle' ? value.shape : 'original'
+  const shape: CropShape =
+    value?.shape === 'free' || value?.shape === 'square' || value?.shape === 'circle' ? value.shape : 'original'
   const savedCrop = parseCrop(value)
 
   const [selection, setSelection] = useState<PercentCrop | undefined>(
     savedCrop ? { unit: '%', ...savedCrop } : undefined,
   )
-  const imageSize = useRef<{ width: number; height: number } | null>(null)
+  const [imageSize, setImageSize] = useState<{ width: number; height: number } | null>(null)
   const initializedFile = useRef<string | null>(null)
 
   const save = (nextShape: CropShape, area?: PercentCrop) => {
@@ -67,17 +89,21 @@ export const ImageCropField: JSONFieldClientComponent = ({ field, path }) => {
       save('original')
       return
     }
-    let area = selection
-    if (!area && imageSize.current) {
-      area = centeredSquare(imageSize.current.width, imageSize.current.height)
-      setSelection(area)
+    if (!imageSize) {
+      save(nextShape)
+      return
     }
+    const area = areaForShape(nextShape, selection, imageSize.width, imageSize.height)
+    setSelection(area)
     save(nextShape, area)
   }
 
   const onImageLoad = (image: HTMLImageElement) => {
     const { naturalWidth: width, naturalHeight: height } = image
-    imageSize.current = { width, height }
+    // Aynı boyut tekrar gelirse önceki değer korunur; React gereksiz yeniden çizim yapmaz.
+    setImageSize((previous) =>
+      previous?.width === width && previous?.height === height ? previous : { width, height },
+    )
 
     // Yeni dosya seçildiğinde eski seçim ona uymaz: seçimi her yeni dosya için bir kez ortadan başlat.
     // Kayıtlı görselde ise mevcut seçime asla dokunma; seçim yoksa ortadan bir başlangıç ver.
@@ -88,19 +114,31 @@ export const ImageCropField: JSONFieldClientComponent = ({ field, path }) => {
       return
     }
 
-    const area = centeredSquare(width, height)
+    const area = shape === 'free' ? fullImage : centeredSquare(width, height)
     setSelection(area)
     if (shape !== 'original') save(shape, area)
   }
 
+  // Görsel tarayıcı önbelleğinden, bileşen sayfaya bağlanmadan önce yüklenmiş olabilir; bu durumda
+  // onLoad hiç tetiklenmez. Görsel zaten hazırsa yükleme işlemi burada elle çalıştırılır.
+  const imageRef = (image: HTMLImageElement | null) => {
+    if (image?.complete && image.naturalWidth > 0) onImageLoad(image)
+  }
+
   const preview = shape !== 'original' ? parseCrop(value) : null
+  const previewRatio =
+    preview && imageSize ? getCropAspectRatio(preview, imageSize.width, imageSize.height) : 1
 
   return (
     <div style={styles.wrapper}>
       <FieldLabel label={field.label} path={path} />
       <p style={styles.description}>
-        Fotoğrafın sitede nasıl görüneceğini seçin. Kare veya yuvarlakta, çerçeveyi sürükleyerek ve köşelerinden
-        boyutlandırarak hangi kısmın görüneceğini belirleyin. Orijinal dosya değişmez.
+        Fotoğrafın sitede nasıl görüneceğini seçin. Çerçeveyi sürükleyerek ve köşelerinden boyutlandırarak
+        hangi kısmın görüneceğini belirleyin. Orijinal dosya değişmez.
+        <br />
+        <strong>Serbest:</strong> istediğiniz alanı seçin, çerçevesiz gösterilir (arka planı kaldırılmış
+        fotoğraflar site zeminiyle bütünleşir). <strong>Kare / Yuvarlak:</strong> seçilen alan çerçeve içinde
+        gösterilir.
       </p>
 
       <div role="radiogroup" aria-label="Gösterim şekli" style={styles.buttons}>
@@ -125,11 +163,11 @@ export const ImageCropField: JSONFieldClientComponent = ({ field, path }) => {
           <div style={styles.cropArea}>
             {shape === 'original' ? (
               // eslint-disable-next-line @next/next/no-img-element -- admin önizlemesi; optimizasyon gerekmez
-              <img src={src} alt="" style={styles.image} onLoad={(event) => onImageLoad(event.currentTarget)} />
+              <img src={src} alt="" style={styles.image} ref={imageRef} onLoad={(event) => onImageLoad(event.currentTarget)} />
             ) : (
               <ReactCrop
                 crop={selection}
-                aspect={1}
+                aspect={isFramedShape(shape) ? 1 : undefined}
                 circularCrop={shape === 'circle'}
                 keepSelection
                 ruleOfThirds
@@ -138,7 +176,7 @@ export const ImageCropField: JSONFieldClientComponent = ({ field, path }) => {
                 onComplete={(_, percentCrop) => save(shape, percentCrop)}
               >
                 {/* eslint-disable-next-line @next/next/no-img-element -- kırpma aracı ham <img> ister */}
-                <img src={src} alt="" style={styles.image} onLoad={(event) => onImageLoad(event.currentTarget)} />
+                <img src={src} alt="" style={styles.image} ref={imageRef} onLoad={(event) => onImageLoad(event.currentTarget)} />
               </ReactCrop>
             )}
           </div>
@@ -147,10 +185,17 @@ export const ImageCropField: JSONFieldClientComponent = ({ field, path }) => {
             <div style={styles.previewColumn}>
               <span style={styles.previewLabel}>Sitede görünüm</span>
               <div
-                style={{
-                  ...styles.preview,
-                  borderRadius: preview.shape === 'circle' ? '9999px' : '12px',
-                }}
+                style={
+                  preview.shape === 'free'
+                    ? {
+                        ...styles.preview,
+                        ...styles.previewFree,
+                        aspectRatio: previewRatio,
+                        width: previewRatio >= 1 ? '160px' : 'auto',
+                        height: previewRatio >= 1 ? 'auto' : '160px',
+                      }
+                    : { ...styles.preview, borderRadius: preview.shape === 'circle' ? '9999px' : '12px' }
+                }
               >
                 {/* eslint-disable-next-line @next/next/no-img-element -- admin önizlemesi */}
                 <img src={src} alt="" style={{ ...getCropStyle(preview), maxWidth: 'none' }} />
@@ -213,5 +258,11 @@ const styles: Record<string, CSSProperties> = {
     // Sitedeki çerçevenin zemin rengi (sage-100); şeffaf görsellerde önizleme siteyle aynı görünsün.
     background: '#e3ebe6',
     boxShadow: '0 4px 14px rgba(0,0,0,0.12)',
+  },
+  // Serbest: çerçevesiz; ana sayfa karşılama alanının yeşil zemini üzerinde gösterilir.
+  previewFree: {
+    background: 'linear-gradient(135deg, #3f574b, #4c6a5b 50%, #34473e)',
+    borderRadius: '8px',
+    boxShadow: 'none',
   },
 }

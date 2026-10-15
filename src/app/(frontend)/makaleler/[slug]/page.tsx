@@ -4,7 +4,7 @@ import { notFound } from 'next/navigation'
 
 import { ArticleCard } from '@/components/ArticleCard'
 import { ArrowLeftIcon } from '@/components/Icons'
-import { getMediaCrop, MediaFrame } from '@/components/MediaFrame'
+import { getFramedCrop, MediaFrame } from '@/components/MediaFrame'
 import { Reveal } from '@/components/Reveal'
 import { RichText } from '@/components/RichText'
 import { getAllArticleSlugs, getArticleBySlug, getLatestArticles } from '@/lib/queries'
@@ -72,7 +72,7 @@ export default async function ArticlePage({ params }: PageProps<'/makaleler/[slu
       {isMedia(article.coverImage) && (
         <div className="bg-gradient-to-b from-sand from-50% to-cream to-50%">
           <div className="container-page max-w-5xl">
-            {getMediaCrop(article.coverImage) ? (
+            {getFramedCrop(article.coverImage) ? (
               // Kare/yuvarlak seçildiyse şekil kapak alanının ortasında gösterilir.
               <div className="flex aspect-[16/9] items-center justify-center rounded-[2rem] bg-sage-100 p-6 md:p-10">
                 <MediaFrame

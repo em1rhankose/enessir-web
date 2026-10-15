@@ -1,13 +1,17 @@
 import type { CSSProperties } from 'react'
 
-export type CropShape = 'original' | 'square' | 'circle'
+/**
+ * original: görselin tamamı · free: serbest seçilen alan, çerçevesiz (dekupe görseller zeminle bütünleşir)
+ * square / circle: seçilen alan kare veya yuvarlak çerçevede.
+ */
+export type CropShape = 'original' | 'free' | 'square' | 'circle'
 
 /**
  * Admin panelde seçilen gösterim şekli ve alanı. Alan, orijinal görselin yüzdesi olarak tutulur;
  * böylece görselin her boyuttaki kopyasında (küçük resim, kart, büyük) aynı bölge gösterilir.
  */
 export type ImageCrop = {
-  shape: CropShape
+  shape: Exclude<CropShape, 'original'>
   /** Seçilen alanın sol üst köşesi ve boyutu, 0–100 arası yüzde. */
   x: number
   y: number
@@ -18,15 +22,18 @@ export type ImageCrop = {
 const isNumberInRange = (value: unknown, min: number, max: number) =>
   typeof value === 'number' && Number.isFinite(value) && value >= min && value <= max
 
+/** Kare veya yuvarlak çerçeve kullanan şekiller. */
+export const isFramedShape = (shape: CropShape) => shape === 'square' || shape === 'circle'
+
 /**
- * Veritabanındaki ham değeri doğrular. Kare/yuvarlak dışındaki ya da bozuk değerler için null döner;
- * bu durumda görsel "olduğu gibi" gösterilir.
+ * Veritabanındaki ham değeri doğrular. "Olduğu gibi" ya da bozuk değerler için null döner;
+ * bu durumda görselin tamamı gösterilir.
  */
 export const parseCrop = (value: unknown): ImageCrop | null => {
   if (typeof value !== 'object' || value === null) return null
 
   const { shape, x, y, width, height } = value as Record<string, unknown>
-  if (shape !== 'square' && shape !== 'circle') return null
+  if (shape !== 'free' && shape !== 'square' && shape !== 'circle') return null
   if (!isNumberInRange(x, 0, 100) || !isNumberInRange(y, 0, 100)) return null
   if (!isNumberInRange(width, 1, 100) || !isNumberInRange(height, 1, 100)) return null
 
@@ -44,6 +51,10 @@ export const getCropStyle = (crop: ImageCrop): CSSProperties => ({
   width: `${(100 / crop.width) * 100}%`,
   height: `${(100 / crop.height) * 100}%`,
 })
+
+/** Seçilen alanın piksel cinsinden en/boy oranı (görselin gerçek boyutlarıyla). */
+export const getCropAspectRatio = (crop: ImageCrop, imageWidth: number, imageHeight: number) =>
+  (crop.width * imageWidth) / (crop.height * imageHeight)
 
 /** Kırpma nedeniyle görsel çerçeveden büyük çizildiğinde tarayıcıya doğru boyutu indirmesini söyler. */
 export const scaleSizes = (sizes: string, factor: number) =>

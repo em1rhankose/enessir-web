@@ -5,7 +5,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 
 import { ChevronDownIcon } from '@/components/Icons'
-import { getMediaCrop, MediaFrame } from '@/components/MediaFrame'
+import { getFramedCrop, MediaFrame } from '@/components/MediaFrame'
 import type { Media } from '@/payload-types'
 
 type HeroImage = { src: string; alt: string }
@@ -86,7 +86,7 @@ export const Hero = ({ title, subtitle, buttonText, image, portrait }: HeroProps
         </motion.div>
       </div>
 
-      {portrait && getMediaCrop(portrait) && (
+      {portrait && getFramedCrop(portrait) && (
         <motion.div
           initial={{ opacity: 0, scale: 0.94 }}
           animate={{ opacity: 1, scale: 1 }}
@@ -106,7 +106,8 @@ export const Hero = ({ title, subtitle, buttonText, image, portrait }: HeroProps
         </motion.div>
       )}
 
-      {portrait?.url && !getMediaCrop(portrait) && (
+      {/* Olduğu gibi veya serbest alan: dekupe portre çerçevesiz, zeminle bütünleşik ve alt kenara oturur. */}
+      {portrait?.url && !getFramedCrop(portrait) && (
         <motion.div
           initial={{ opacity: 0, y: 40 }}
           animate={{ opacity: 1, y: 0 }}
@@ -118,13 +119,13 @@ export const Hero = ({ title, subtitle, buttonText, image, portrait }: HeroProps
             aria-hidden="true"
             className="absolute bottom-0 left-1/2 aspect-square w-[85%] max-w-xl -translate-x-1/2 translate-y-1/4 rounded-full bg-sage-300/35 blur-3xl"
           />
-          <Image
-            src={portrait.url}
-            alt={portrait.alt}
-            fill
+          <MediaFrame
+            media={portrait}
+            fit="contain"
             priority
             sizes="(min-width: 1024px) 45vw, 100vw"
-            className="object-contain object-bottom drop-shadow-[0_20px_40px_rgba(0,0,0,0.25)]"
+            className="h-full"
+            imageClassName="drop-shadow-[0_20px_40px_rgba(0,0,0,0.25)]"
           />
         </motion.div>
       )}
