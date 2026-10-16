@@ -49,8 +49,9 @@ jobs:
       - name: Lint
         run: npm run lint
 
+      # next typegen: sayfa tiplerini (PageProps) üretir; temiz bir kopyada .next klasörü olmadığı için gerekli.
       - name: Tip kontrolü
-        run: npx tsc --noEmit
+        run: npm run typecheck
 
       - name: Veritabanı migration'ları
         run: npm run migrate

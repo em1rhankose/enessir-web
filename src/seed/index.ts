@@ -39,17 +39,22 @@ const seed = async () => {
     })
   }
 
-  const [heroImage, centerImage1, centerImage2, centerImage3, aboutPhoto, ...articleImages] = await Promise.all([
-    createImage('karsilama', 'Yumuşak yeşil tonlarda soyut arka plan', 'dusk', 7),
-    createImage('merkez-1', 'Danışma merkezinin sakin bekleme alanı', 'sand', 11),
-    createImage('merkez-2', 'Terapi odası', 'mist', 23),
-    createImage('merkez-3', 'Merkezin girişi', 'clay', 31),
-    createImage('portre', 'Psikolog Enes Sir portresi', 'sage', 43),
-    createImage('makale-kaygi', 'Kaygıyı simgeleyen soyut görsel', 'sage', 101),
-    createImage('makale-terapi', 'İlk terapi seansını simgeleyen soyut görsel', 'sand', 202),
-    createImage('makale-sinir', 'Sınırları simgeleyen soyut görsel', 'clay', 303),
-    createImage('makale-uyku', 'Uykuyu simgeleyen soyut görsel', 'mist', 404),
-  ])
+  const imageSpecs: Parameters<typeof createImage>[] = [
+    ['karsilama', 'Yumuşak yeşil tonlarda soyut arka plan', 'dusk', 7],
+    ['merkez-1', 'Danışma merkezinin sakin bekleme alanı', 'sand', 11],
+    ['merkez-2', 'Terapi odası', 'mist', 23],
+    ['merkez-3', 'Merkezin girişi', 'clay', 31],
+    ['portre', 'Psikolog Enes Sir portresi', 'sage', 43],
+    ['makale-kaygi', 'Kaygıyı simgeleyen soyut görsel', 'sage', 101],
+    ['makale-terapi', 'İlk terapi seansını simgeleyen soyut görsel', 'sand', 202],
+    ['makale-sinir', 'Sınırları simgeleyen soyut görsel', 'clay', 303],
+    ['makale-uyku', 'Uykuyu simgeleyen soyut görsel', 'mist', 404],
+  ]
+
+  // Sırayla yüklenir: paralel yüklemede Payload aynı dosya adını iki kez seçip çakışabiliyor.
+  const images = []
+  for (const spec of imageSpecs) images.push(await createImage(...spec))
+  const [heroImage, centerImage1, centerImage2, centerImage3, aboutPhoto, ...articleImages] = images
 
   payload.logger.info('Sayfa içerikleri yazılıyor...')
 
