@@ -63,6 +63,8 @@ export default buildConfig({
     vercelBlobStorage({
       enabled: Boolean(process.env.BLOB_READ_WRITE_TOKEN),
       token: process.env.BLOB_READ_WRITE_TOKEN,
+      // Eklentinin eklediği alanlar kapalıyken de eklenir: veritabanı yapısı (ve migration'lar) her ortamda aynı kalır.
+      alwaysInsertFields: true,
       // Dosya adları korunur (mevcut görseller aynı adlarla aktarılabilir).
       addRandomSuffix: false,
       collections: {
