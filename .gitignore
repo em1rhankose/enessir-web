@@ -55,3 +55,11 @@ node_modules/
 /playwright-report/
 /blob-report/
 /playwright/.cache/
+
+# Vercel CLI bağlantısı (.env.local zaten yukarıdaki .env*.local kuralıyla hariç)
+.vercel
+
+# Neon entegrasyonunun eklediği yapay zekâ yardım dosyaları (projenin parçası değil)
+.agents/
+.claude/skills/
+skills-lock.json
