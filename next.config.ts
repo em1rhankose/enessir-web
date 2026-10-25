@@ -22,7 +22,8 @@ const securityHeaders = [
 
 const nextConfig: NextConfig = {
   // Docker imajı için: çalışması gereken dosyalar .next/standalone altında toplanır (küçük imaj, hızlı açılış).
-  output: 'standalone',
+  // Vercel kendi çıktı biçimini kullandığı için orada kapalıdır.
+  output: process.env.VERCEL ? undefined : 'standalone',
   poweredByHeader: false,
   async headers() {
     return [{ source: '/:path*', headers: securityHeaders }]
@@ -33,6 +34,8 @@ const nextConfig: NextConfig = {
         pathname: '/api/media/file/**',
       },
     ],
+    // Vercel'de görseller Vercel Blob'dan gelir.
+    remotePatterns: [{ protocol: 'https', hostname: '*.public.blob.vercel-storage.com' }],
   },
   webpack: (webpackConfig) => {
     webpackConfig.resolve.extensionAlias = {

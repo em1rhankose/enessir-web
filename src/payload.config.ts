@@ -1,5 +1,6 @@
 import { postgresAdapter } from '@payloadcms/db-postgres'
 import { lexicalEditor } from '@payloadcms/richtext-lexical'
+import { vercelBlobStorage } from '@payloadcms/storage-vercel-blob'
 import { tr } from '@payloadcms/translations/languages/tr'
 import path from 'path'
 import { buildConfig } from 'payload'
@@ -56,5 +57,18 @@ export default buildConfig({
     prodMigrations: migrations,
   }),
   sharp,
-  plugins: [],
+  plugins: [
+    // Vercel'de dosya sistemi kalıcı olmadığı için yüklenen görseller Vercel Blob'da saklanır.
+    // Token yoksa (bilgisayar, VPS) eklenti kapalıdır ve görseller diske yazılır.
+    vercelBlobStorage({
+      enabled: Boolean(process.env.BLOB_READ_WRITE_TOKEN),
+      token: process.env.BLOB_READ_WRITE_TOKEN,
+      // Dosya adları korunur (mevcut görseller aynı adlarla aktarılabilir).
+      addRandomSuffix: false,
+      collections: {
+        // Görseller Payload üzerinden değil, doğrudan Blob'un CDN'inden sunulur (daha hızlı).
+        media: { disablePayloadAccessControl: true },
+      },
+    }),
+  ],
 })
