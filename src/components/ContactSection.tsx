@@ -65,7 +65,7 @@ export const ContactSection = ({ settings, heading }: ContactSectionProps) => {
         <div className="h-full min-h-[420px] overflow-hidden rounded-3xl bg-sage-100 ring-1 ring-line lg:min-h-[640px]">
           {settings.mapQuery ? (
             <iframe
-              title="Danışma merkezimizin haritadaki konumu"
+              title="Ofisimizin haritadaki konumu"
               src={buildMapEmbedUrl(settings.mapQuery)}
               className="size-full min-h-[420px] border-0 lg:min-h-[640px]"
               loading="lazy"

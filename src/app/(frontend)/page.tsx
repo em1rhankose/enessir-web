@@ -45,7 +45,7 @@ export default async function HomePage() {
 
   const heroImage = getImage(home.heroImage, 'hero')
   const heroPortrait = isMedia(home.heroPortrait) ? home.heroPortrait : null
-  // Danışma Merkezimiz galerisinin ilk fotoğrafı ana sayfada da kullanılır.
+  // Ofisimiz galerisinin ilk fotoğrafı ana sayfada da kullanılır.
   const centerMedia = center.gallery?.[0]
   const centerCrop = getFramedCrop(centerMedia)
 
@@ -59,11 +59,11 @@ export default async function HomePage() {
         portrait={heroPortrait}
       />
 
-      {/* Danışma Merkezimiz */}
+      {/* Ofisimiz */}
       <section id="danisma-merkezimiz" className="py-24 md:py-32">
         <div className="container-page grid items-center gap-14 lg:grid-cols-2 lg:gap-20">
           <Reveal>
-            <SectionHeading eyebrow="Danışma Merkezimiz" title={center.title} description={center.summary} />
+            <SectionHeading eyebrow="Ofisimiz" title={center.title} description={center.summary} />
 
             {services.length > 0 && (
               <ul className="mt-10 grid gap-4 sm:grid-cols-2">

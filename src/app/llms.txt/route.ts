@@ -35,7 +35,7 @@ export async function GET() {
     '',
     '## Sayfalar',
     `- [Ben Kimim](${baseUrl}/ben-kimim): ${about.fullName} hakkında, eğitim ve sertifikalar`,
-    `- [Danışma Merkezimiz](${baseUrl}/danisma-merkezimiz): Merkez ve çalışma yöntemi`,
+    `- [Ofisimiz](${baseUrl}/danisma-merkezimiz): Ofis ve çalışma yöntemi`,
     `- [Hizmetler](${baseUrl}/hizmetler): Verilen tüm hizmetler`,
     `- [Makaleler](${baseUrl}/makaleler): Ruh sağlığı üzerine yazılar`,
     `- [İletişim](${baseUrl}/iletisim): Randevu ve iletişim bilgileri`,

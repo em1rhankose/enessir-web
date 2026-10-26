@@ -6,7 +6,7 @@ import { revalidateGlobalAfterChange } from '@/hooks/revalidateSite'
 
 export const CounselingCenter: GlobalConfig = {
   slug: 'counseling-center',
-  label: 'Danışma Merkezimiz',
+  label: 'Ofisimiz',
   admin: {
     group: 'Sayfalar',
   },
@@ -23,7 +23,7 @@ export const CounselingCenter: GlobalConfig = {
       label: 'Başlık',
       type: 'text',
       required: true,
-      defaultValue: 'Danışma Merkezimiz',
+      defaultValue: 'Ofisimiz',
     },
     {
       name: 'summary',
@@ -38,7 +38,7 @@ export const CounselingCenter: GlobalConfig = {
       label: 'Detaylı içerik',
       type: 'richText',
       admin: {
-        description: 'Danışma Merkezimiz sayfasında görünen uzun metin.',
+        description: 'Ofisimiz sayfasında görünen uzun metin.',
       },
     },
     {

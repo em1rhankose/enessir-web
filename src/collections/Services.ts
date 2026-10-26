@@ -8,7 +8,7 @@ import { revalidateAfterChange, revalidateAfterDelete } from '@/hooks/revalidate
 
 /**
  * Verilen hizmetler. Her kayıt sitede kendi sayfasını (/hizmetler/<slug>) oluşturur;
- * ana sayfa, Danışma Merkezimiz sayfası, alt bilgi ve site haritası listeyi buradan alır.
+ * ana sayfa, Ofisimiz sayfası, alt bilgi ve site haritası listeyi buradan alır.
  */
 export const Services: CollectionConfig = {
   slug: 'services',

@@ -15,7 +15,7 @@ export async function generateMetadata(): Promise<Metadata> {
   const center = await getCounselingCenter()
   return buildPageMetadata({
     seo: center.seo,
-    title: 'Danışma Merkezimiz',
+    title: 'Ofisimiz',
     description: center.summary,
     image: center.gallery?.[0],
     path: '/danisma-merkezimiz',
@@ -28,7 +28,7 @@ export default async function CounselingCenterPage() {
 
   return (
     <>
-      <PageHeader eyebrow="Danışma Merkezimiz" title={center.title} description={center.summary} />
+      <PageHeader eyebrow="Ofisimiz" title={center.title} description={center.summary} />
 
       {center.content && (
         <section className="py-20 md:py-24">

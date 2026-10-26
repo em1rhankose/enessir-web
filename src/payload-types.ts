@@ -690,7 +690,7 @@ export interface CounselingCenter {
    */
   summary?: string | null;
   /**
-   * Danışma Merkezimiz sayfasında görünen uzun metin.
+   * Ofisimiz sayfasında görünen uzun metin.
    */
   content?: {
     root: {
