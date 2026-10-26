@@ -1,6 +1,6 @@
 export const navItems = [
   { href: '/', label: 'Ana Sayfa' },
-  { href: '/danisma-merkezimiz', label: 'Danışma Merkezimiz' },
+  { href: '/danisma-merkezimiz', label: 'Ofisimiz' },
   { href: '/ben-kimim', label: 'Ben Kimim' },
   { href: '/makaleler', label: 'Makaleler' },
   { href: '/iletisim', label: 'İletişim' },

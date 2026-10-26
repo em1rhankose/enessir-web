@@ -9,6 +9,9 @@ import { navItems } from '@/lib/navigation'
 
 const SCROLL_THRESHOLD = 40
 
+// İletişim sayfasına zaten "Randevu Al" butonu gidiyor; menüde ayrıca gösterilmez.
+const headerNavItems = navItems.filter((item) => item.href !== '/iletisim')
+
 export const Header = ({ siteName }: { siteName: string }) => {
   const pathname = usePathname()
   const [isScrolled, setIsScrolled] = useState(false)
@@ -48,7 +51,7 @@ export const Header = ({ siteName }: { siteName: string }) => {
         </Link>
 
         <nav aria-label="Ana menü" className="hidden items-center gap-8 lg:flex">
-          {navItems.map((item) => (
+          {headerNavItems.map((item) => (
             <Link
               key={item.href}
               href={item.href}
@@ -90,7 +93,7 @@ export const Header = ({ siteName }: { siteName: string }) => {
       {isMenuOpen && (
         <nav id="mobile-menu" aria-label="Mobil menü" className="border-t border-line bg-cream lg:hidden">
           <ul className="container-page flex flex-col py-4">
-            {navItems.map((item) => (
+            {headerNavItems.map((item) => (
               <li key={item.href}>
                 <Link
                   href={item.href}
