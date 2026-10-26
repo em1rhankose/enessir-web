@@ -66,7 +66,7 @@ export default async function AboutPage() {
                         aria-hidden="true"
                         className="absolute top-1.5 -left-[2.3rem] size-3 rounded-full bg-sage-500 ring-4 ring-cream"
                       />
-                      {item.year && <p className="text-sm font-semibold text-sage-600">{item.year}</p>}
+                      {item.showYear && item.year && <p className="text-sm font-semibold text-sage-600">{item.year}</p>}
                       <p className="mt-1 text-lg font-medium text-ink">{item.title}</p>
                       {item.institution && <p className="text-muted">{item.institution}</p>}
                     </li>

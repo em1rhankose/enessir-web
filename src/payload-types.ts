@@ -764,6 +764,10 @@ export interface About {
         title: string;
         institution?: string | null;
         year?: string | null;
+        /**
+         * İşaretli değilse yıl kayıtlı kalır ama sitede görünmez.
+         */
+        showYear?: boolean | null;
         id?: string | null;
       }[]
     | null;
@@ -926,6 +930,7 @@ export interface AboutSelect<T extends boolean = true> {
         title?: T;
         institution?: T;
         year?: T;
+        showYear?: T;
         id?: T;
       };
   seo?:

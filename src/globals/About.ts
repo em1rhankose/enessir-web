@@ -72,6 +72,15 @@ export const About: GlobalConfig = {
             { name: 'year', label: 'Yıl', type: 'text' },
           ],
         },
+        {
+          name: 'showYear',
+          label: 'Yılı sitede göster',
+          type: 'checkbox',
+          defaultValue: false,
+          admin: {
+            description: 'İşaretli değilse yıl kayıtlı kalır ama sitede görünmez.',
+          },
+        },
       ],
     },
     seoField(),
