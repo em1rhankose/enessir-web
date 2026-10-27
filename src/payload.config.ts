@@ -28,6 +28,8 @@ export default buildConfig({
     theme: 'light',
     meta: {
       titleSuffix: ' | Enes Sir Yönetim Paneli',
+      // Sekmede sitenin dolma kalem ikonu görünsün (src/app/icon.svg).
+      icons: [{ rel: 'icon', type: 'image/svg+xml', url: '/icon.svg' }],
     },
     importMap: {
       baseDir: path.resolve(dirname),
