@@ -133,7 +133,7 @@ export const Hero = ({ title, subtitle, buttonText, image, portrait }: HeroProps
 
     {!portrait && (
       <a
-        href="#danisma-merkezimiz"
+        href="#ofisimiz"
         aria-label="Aşağı kaydır"
         className="absolute bottom-8 left-1/2 -translate-x-1/2 animate-bounce text-white/80 motion-reduce:animate-none"
       >

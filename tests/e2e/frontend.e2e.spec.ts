@@ -19,7 +19,7 @@ test.describe('Ana sayfa', () => {
   test('bölümler menü sırasıyla gelir ve en fazla 3 makale gösterilir', async ({ page }) => {
     await page.goto('/')
 
-    const menuSections = ['danisma-merkezimiz', 'ben-kimim', 'makaleler', 'iletisim']
+    const menuSections = ['ofisimiz', 'ben-kimim', 'makaleler', 'iletisim']
     const sectionIds = await page.locator('main section[id]').evaluateAll((sections) =>
       sections.map((section) => section.id),
     )
@@ -47,7 +47,7 @@ test.describe('Ana sayfa', () => {
 test.describe('WhatsApp butonu', () => {
   const button = 'a[href^="https://wa.me/"]'
 
-  for (const path of ['/', '/danisma-merkezimiz', '/ben-kimim', '/iletisim']) {
+  for (const path of ['/', '/ofisimiz', '/ben-kimim', '/iletisim']) {
     test(`${path} sayfasında görünür`, async ({ page }) => {
       await page.goto(path)
       await expect(page.locator(button)).toHaveCount(1)

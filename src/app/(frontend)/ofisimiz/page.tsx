@@ -18,7 +18,7 @@ export async function generateMetadata(): Promise<Metadata> {
     title: 'Ofisimiz',
     description: center.summary,
     image: center.gallery?.[0],
-    path: '/danisma-merkezimiz',
+    path: '/ofisimiz',
   })
 }
 

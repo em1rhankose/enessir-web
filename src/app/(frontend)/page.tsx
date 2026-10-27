@@ -60,7 +60,7 @@ export default async function HomePage() {
       />
 
       {/* Ofisimiz */}
-      <section id="danisma-merkezimiz" className="py-24 md:py-32">
+      <section id="ofisimiz" className="py-24 md:py-32">
         <div className="container-page grid items-center gap-14 lg:grid-cols-2 lg:gap-20">
           <Reveal>
             <SectionHeading eyebrow="Ofisimiz" title={center.title} description={center.summary} />
@@ -82,7 +82,7 @@ export default async function HomePage() {
               </ul>
             )}
 
-            <Link href="/danisma-merkezimiz" className="btn-outline mt-10">
+            <Link href="/ofisimiz" className="btn-outline mt-10">
               Merkezimizi Tanıyın
               <ArrowRightIcon className="size-4" />
             </Link>

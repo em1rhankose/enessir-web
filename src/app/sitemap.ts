@@ -8,7 +8,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = getServerUrl()
   const [articles, services] = await Promise.all([getAllArticleSlugs(), getServices()])
 
-  const staticPages = ['', '/danisma-merkezimiz', '/ben-kimim', '/hizmetler', '/makaleler', '/iletisim'].map(
+  const staticPages = ['', '/ofisimiz', '/ben-kimim', '/hizmetler', '/makaleler', '/iletisim'].map(
     (path) => ({
       url: `${baseUrl}${path}`,
       lastModified: new Date(),
