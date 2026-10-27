@@ -90,10 +90,11 @@ Fotoğraflar 6. adımdan sonra kopyalanır.
 ```bash
 cd /opt/enessir
 docker compose -f docker-compose.prod.yml up -d db
-docker compose -f docker-compose.prod.yml build app
-docker compose -f docker-compose.prod.yml up -d
+docker buildx build --load --network host --allow network.host --secret id=env,src=.env -t enessir-web .
+docker compose -f docker-compose.prod.yml up -d --no-build
 ```
 
+- İmaj `docker compose build` yerine `docker buildx` ile derlenir: Compose v5, derlemenin veritabanına bağlanması için gereken ağ iznini (`network.host`) vermiyor.
 - İlk derleme birkaç dakika sürer. Veritabanı boşsa tablolar bu sırada otomatik oluşturulur.
 - Caddy ilk istekte HTTPS sertifikasını otomatik alır.
 
@@ -122,8 +123,8 @@ rm -rf media-yukle icerik.sql
 ```bash
 cd /opt/enessir
 git pull
-docker compose -f docker-compose.prod.yml build app
-docker compose -f docker-compose.prod.yml up -d
+docker buildx build --load --network host --allow network.host --secret id=env,src=.env -t enessir-web .
+docker compose -f docker-compose.prod.yml up -d --no-build
 # Her derleme ~260 MB'lık yeni bir imaj oluşturur; kullanılmayan eski imajları ve derleme önbelleğini sil.
 docker image prune -f
 docker builder prune -f --filter until=168h
