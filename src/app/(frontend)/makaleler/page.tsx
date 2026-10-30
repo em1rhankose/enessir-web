@@ -10,7 +10,7 @@ import { buildPageMetadata } from '@/lib/seo'
 
 export const generateMetadata = (): Promise<Metadata> =>
   buildPageMetadata({
-    title: 'Makaleler',
+    title: 'Yazılarım',
     description: 'Ruh sağlığı, ilişkiler ve kişisel gelişim üzerine bir psikoloğun kaleminden yazılar.',
     path: '/makaleler',
   })
@@ -27,7 +27,7 @@ export default async function ArticlesPage({ searchParams }: PageProps<'/makalel
   return (
     <>
       <PageHeader
-        eyebrow="Makaleler"
+        eyebrow="Yazılarım"
         title="Yazılar ve Düşünceler"
         description="Ruh sağlığı, ilişkiler ve kendimizi anlamak üzerine yazılar."
       />
@@ -43,7 +43,7 @@ export default async function ArticlesPage({ searchParams }: PageProps<'/makalel
               ))}
             </div>
           ) : (
-            <p className="text-lg text-muted">Henüz yayınlanmış bir makale bulunmuyor.</p>
+            <p className="text-lg text-muted">Henüz yayınlanmış bir yazı bulunmuyor.</p>
           )}
 
           {totalPages > 1 && (

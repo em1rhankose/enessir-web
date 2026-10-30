@@ -2,7 +2,7 @@ export const navItems = [
   { href: '/', label: 'Ana Sayfa' },
   { href: '/ofisimiz', label: 'Ofisimiz' },
   { href: '/ben-kimim', label: 'Ben Kimim' },
-  { href: '/makaleler', label: 'Makaleler' },
+  { href: '/makaleler', label: 'Yazılarım' },
   { href: '/iletisim', label: 'İletişim' },
 ] as const
 

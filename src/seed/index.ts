@@ -94,7 +94,7 @@ const seed = async () => {
         'Bireysel terapi ve psikolojik danışmanlıkla, kendinizi daha iyi anlamanız için güvenli ve yargısız bir alan.',
       heroImage: heroImage.id,
       heroButtonText: 'Randevu Al',
-      articlesHeading: 'Son Makaleler',
+      articlesHeading: 'Son Yazılarım',
       contactHeading: 'Bize Ulaşın',
       faqs: sampleHomeFaqs,
     },

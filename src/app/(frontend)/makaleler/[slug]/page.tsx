@@ -63,7 +63,7 @@ export default async function ArticlePage({ params }: PageProps<'/makaleler/[slu
               className="inline-flex items-center gap-2 text-sm font-semibold text-sage-600 hover:text-sage-800"
             >
               <ArrowLeftIcon className="size-4" />
-              Tüm makaleler
+              Tüm yazılarım
             </Link>
             <h1 className="mt-6 text-4xl leading-tight text-ink md:text-5xl">{article.title}</h1>
             <p className="mt-5 text-lg leading-relaxed text-muted">{article.excerpt}</p>
@@ -130,7 +130,7 @@ export default async function ArticlePage({ params }: PageProps<'/makaleler/[slu
         <section aria-labelledby="other-articles" className="border-t border-line py-20">
           <div className="container-page">
             <h2 id="other-articles" className="text-3xl text-ink">
-              Diğer makaleler
+              Diğer yazılarım
             </h2>
             <div className="mt-10 grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
               {otherArticles.map((item) => (

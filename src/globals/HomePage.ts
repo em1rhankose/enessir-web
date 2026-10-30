@@ -70,9 +70,9 @@ export const HomePage: GlobalConfig = {
       fields: [
         {
           name: 'articlesHeading',
-          label: 'Makaleler bölümü başlığı',
+          label: 'Yazılarım bölümü başlığı',
           type: 'text',
-          defaultValue: 'Son Makaleler',
+          defaultValue: 'Son Yazılarım',
         },
         {
           name: 'contactHeading',

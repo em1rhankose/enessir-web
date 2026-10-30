@@ -139,16 +139,16 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* Son Makaleler */}
+      {/* Son yazılar */}
       <section id="makaleler" className="py-24 md:py-32">
         <div className="container-page">
           <Reveal className="flex flex-col justify-between gap-6 md:flex-row md:items-end">
-            <SectionHeading eyebrow="Makaleler" title={home.articlesHeading || 'Son Makaleler'} />
+            <SectionHeading eyebrow="Yazılarım" title={home.articlesHeading || 'Son Yazılarım'} />
             <Link
               href="/makaleler"
               className="inline-flex shrink-0 items-center gap-2 font-semibold text-sage-600 hover:text-sage-800"
             >
-              Tüm makaleler
+              Tüm yazılarım
               <ArrowRightIcon className="size-4" />
             </Link>
           </Reveal>
@@ -162,12 +162,12 @@ export default async function HomePage() {
               ))}
             </div>
           ) : (
-            <p className="mt-12 text-muted">Yakında burada makaleler yer alacak.</p>
+            <p className="mt-12 text-muted">Yakında burada yazılarım yer alacak.</p>
           )}
         </div>
       </section>
 
-      {/* Sıkça Sorulan Sorular: makalelerin devamında, aynı zemin üzerinde */}
+      {/* Sıkça Sorulan Sorular: yazıların devamında, aynı zemin üzerinde */}
       {home.faqs && home.faqs.length > 0 && (
         <section id="sss" aria-labelledby="sss-baslik" className="pb-24 md:pb-32">
           <JsonLd data={faqSchema(home.faqs)} />

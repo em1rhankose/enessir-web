@@ -37,7 +37,7 @@ export async function GET() {
     `- [Ben Kimim](${baseUrl}/ben-kimim): ${about.fullName} hakkında, eğitim ve sertifikalar`,
     `- [Ofisimiz](${baseUrl}/ofisimiz): Ofis ve çalışma yöntemi`,
     `- [Hizmetler](${baseUrl}/hizmetler): Verilen tüm hizmetler`,
-    `- [Makaleler](${baseUrl}/makaleler): Ruh sağlığı üzerine yazılar`,
+    `- [Yazılarım](${baseUrl}/makaleler): Ruh sağlığı üzerine yazılar`,
     `- [İletişim](${baseUrl}/iletisim): Randevu ve iletişim bilgileri`,
   ]
 
@@ -49,7 +49,7 @@ export async function GET() {
   }
 
   if (articles.length > 0) {
-    lines.push('', '## Makaleler')
+    lines.push('', '## Yazılarım')
     for (const article of articles) {
       lines.push(`- [${article.title}](${baseUrl}/makaleler/${article.slug})`)
     }

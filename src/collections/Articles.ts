@@ -8,8 +8,8 @@ import { revalidateAfterChange, revalidateAfterDelete } from '@/hooks/revalidate
 export const Articles: CollectionConfig = {
   slug: 'articles',
   labels: {
-    singular: 'Makale',
-    plural: 'Makaleler',
+    singular: 'Yazı',
+    plural: 'Yazılarım',
   },
   admin: {
     useAsTitle: 'title',
@@ -45,7 +45,7 @@ export const Articles: CollectionConfig = {
       required: true,
       maxLength: 300,
       admin: {
-        description: 'Makale kartlarında ve Google arama sonuçlarında görünen kısa açıklama.',
+        description: 'Yazı kartlarında ve Google arama sonuçlarında görünen kısa açıklama.',
       },
     },
     {

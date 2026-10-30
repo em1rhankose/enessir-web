@@ -22,14 +22,14 @@ test.describe('Admin paneli', () => {
   test('Türkçe menüde içerik grupları görünür', async () => {
     await page.goto('/admin')
     const nav = page.locator('nav')
-    for (const label of ['Makaleler', 'İletişim Mesajları', 'Ana Sayfa', 'Site Ayarları']) {
+    for (const label of ['Yazılarım', 'İletişim Mesajları', 'Ana Sayfa', 'Site Ayarları']) {
       await expect(nav.getByText(label, { exact: true }).first()).toBeVisible()
     }
   })
 
   test('makale listesi açılır', async () => {
     await page.goto('/admin/collections/articles')
-    await expect(page.locator('h1', { hasText: 'Makaleler' }).first()).toBeVisible()
+    await expect(page.locator('h1', { hasText: 'Yazılarım' }).first()).toBeVisible()
   })
 
   test('site ayarlarında WhatsApp numarası alanı vardır', async () => {
